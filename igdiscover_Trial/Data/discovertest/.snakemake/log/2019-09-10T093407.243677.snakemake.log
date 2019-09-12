@@ -1,0 +1,178 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	20
+	1	all
+	1	check_merging
+	2	check_parsing
+	1	check_trimming
+	2	copy_d_database
+	1	copy_final_j_database
+	1	copy_final_v_database
+	6	dendrogram
+	1	dont_trim_forward_primers
+	1	dont_trim_reverse_primers
+	2	igdiscover_clusterplot
+	6	igdiscover_count
+	1	igdiscover_discover
+	1	igdiscover_discover_j
+	2	igdiscover_filter
+	2	igdiscover_germlinefilter
+	2	igdiscover_igblast
+	1	json_stats
+	1	json_stats_nofinal
+	1	parse_pear_stats
+	1	pear_merge
+	2	plot_errorhistograms
+	1	read_length_histogram
+	2	symlink_limited
+	1	trimmed_fastq_stats
+	2	vj_database_iteration_1
+	46
+
+[Tue Sep 10 09:34:07 2019]
+rule vj_database_iteration_1:
+    input: database/V.fasta
+    output: iteration-01/database/V.fasta
+    jobid: 27
+    wildcards: gene=V
+
+cp -p database/V.fasta iteration-01/database/V.fasta
+
+[Tue Sep 10 09:34:07 2019]
+rule copy_d_database:
+    input: database/D.fasta
+    output: iteration-01/database/D.fasta
+    jobid: 28
+    wildcards: base=iteration-01
+
+cp -p database/D.fasta iteration-01/database/D.fasta
+
+[Tue Sep 10 09:34:07 2019]
+rule symlink_limited:
+    input: reads.1.fastq.gz
+    output: reads/1-limited.1.fastq.gz
+    jobid: 44
+    wildcards: nr=1., ext=fastq
+    resources: time=1
+
+[Tue Sep 10 09:34:07 2019]
+rule symlink_limited:
+    input: reads.2.fastq.gz
+    output: reads/1-limited.2.fastq.gz
+    jobid: 45
+    wildcards: nr=2., ext=fastq
+    resources: time=1
+
+[Tue Sep 10 09:34:07 2019]
+Finished job 27.
+1 of 46 steps (2%) done
+[Tue Sep 10 09:34:07 2019]
+Finished job 28.
+2 of 46 steps (4%) done
+
+[Tue Sep 10 09:34:07 2019]
+rule dendrogram:
+    input: iteration-01/database/V.fasta
+    output: iteration-01/dendrogram_V.pdf
+    jobid: 6
+    wildcards: dir=iteration-01, gene=V
+
+igdiscover dendrogram --mark database/V.fasta iteration-01/database/V.fasta iteration-01/dendrogram_V.pdf
+
+[Tue Sep 10 09:34:07 2019]
+rule dendrogram:
+    input: iteration-01/database/D.fasta
+    output: iteration-01/dendrogram_D.pdf
+    jobid: 7
+    wildcards: dir=iteration-01, gene=D
+
+igdiscover dendrogram --mark database/D.fasta iteration-01/database/D.fasta iteration-01/dendrogram_D.pdf
+[Tue Sep 10 09:34:08 2019]
+Finished job 45.
+3 of 46 steps (7%) done
+
+[Tue Sep 10 09:34:08 2019]
+rule copy_d_database:
+    input: database/D.fasta
+    output: final/database/D.fasta
+    jobid: 35
+    wildcards: base=final
+
+cp -p database/D.fasta final/database/D.fasta
+[Tue Sep 10 09:34:08 2019]
+Finished job 35.
+4 of 46 steps (9%) done
+
+[Tue Sep 10 09:34:08 2019]
+rule dendrogram:
+    input: final/database/D.fasta
+    output: final/dendrogram_D.pdf
+    jobid: 23
+    wildcards: dir=final, gene=D
+
+igdiscover dendrogram --mark database/D.fasta final/database/D.fasta final/dendrogram_D.pdf
+[Tue Sep 10 09:34:08 2019]
+Finished job 44.
+5 of 46 steps (11%) done
+
+[Tue Sep 10 09:34:08 2019]
+rule vj_database_iteration_1:
+    input: database/J.fasta
+    output: iteration-01/database/J.fasta
+    jobid: 29
+    wildcards: gene=J
+
+cp -p database/J.fasta iteration-01/database/J.fasta
+[Tue Sep 10 09:34:08 2019]
+Finished job 29.
+6 of 46 steps (13%) done
+
+[Tue Sep 10 09:34:08 2019]
+rule dendrogram:
+    input: iteration-01/database/J.fasta
+    output: iteration-01/dendrogram_J.pdf
+    jobid: 8
+    wildcards: dir=iteration-01, gene=J
+
+igdiscover dendrogram --mark database/J.fasta iteration-01/database/J.fasta iteration-01/dendrogram_J.pdf
+[Tue Sep 10 09:34:09 2019]
+Finished job 7.
+7 of 46 steps (15%) done
+[Tue Sep 10 09:34:09 2019]
+Finished job 6.
+8 of 46 steps (17%) done
+[Tue Sep 10 09:34:09 2019]
+Finished job 8.
+9 of 46 steps (20%) done
+[Tue Sep 10 09:34:09 2019]
+Finished job 23.
+10 of 46 steps (22%) done
+
+[Tue Sep 10 09:34:09 2019]
+rule pear_merge:
+    input: reads/1-limited.1.fastq.gz, reads/1-limited.2.fastq.gz
+    output: reads/2-merged.fastq.gz, reads/2-pear.log
+    log: reads/2-pear.log
+    jobid: 40
+    threads: 4
+    resources: time=60
+
+igdiscover merge -j 4 reads/1-limited.1.fastq.gz reads/1-limited.2.fastq.gz reads/2-merged.fastq.gz | tee reads/2-pear.log
+[Tue Sep 10 09:34:10 2019]
+Error in rule pear_merge:
+    jobid: 40
+    output: reads/2-merged.fastq.gz, reads/2-pear.log
+    log: reads/2-pear.log (check log file(s) for error message)
+    shell:
+        igdiscover merge -j 4 reads/1-limited.1.fastq.gz reads/1-limited.2.fastq.gz reads/2-merged.fastq.gz | tee reads/2-pear.log
+        (exited with non-zero exit code)
+
+Removing output files of failed job pear_merge since they might be corrupted:
+reads/2-pear.log
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/cofia/Documents/Project/Msc_Bioinformatics_Project/igdiscover_Trial/Data/discovertest/.snakemake/log/2019-09-10T093407.243677.snakemake.log
