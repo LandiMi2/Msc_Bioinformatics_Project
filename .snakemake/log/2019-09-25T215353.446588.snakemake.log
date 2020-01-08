@@ -1,0 +1,569 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Unlimited resources: time
+Job counts:
+	count	jobs
+	1	20
+	1	all
+	1	check_merging
+	2	check_parsing
+	1	check_trimming
+	2	copy_d_database
+	1	copy_final_j_database
+	1	copy_final_v_database
+	6	dendrogram
+	1	dont_trim_forward_primers
+	1	dont_trim_reverse_primers
+	2	gzip_limited
+	2	igdiscover_clusterplot
+	6	igdiscover_count
+	1	igdiscover_discover
+	1	igdiscover_discover_j
+	2	igdiscover_filter
+	2	igdiscover_germlinefilter
+	2	igdiscover_igblast
+	1	json_stats
+	1	json_stats_nofinal
+	1	parse_pear_stats
+	1	pear_merge
+	2	plot_errorhistograms
+	1	read_length_histogram
+	1	trimmed_fastq_stats
+	2	vj_database_iteration_1
+	46
+
+[Wed Sep 25 21:53:53 2019]
+rule gzip_limited:
+    input: reads.1.fastq
+    output: reads/1-limited.1.fastq.gz
+    jobid: 44
+    wildcards: nr=1., ext=fastq
+
+pigz < reads.1.fastq > reads/1-limited.1.fastq.gz
+
+[Wed Sep 25 21:53:53 2019]
+rule vj_database_iteration_1:
+    input: database/V.fasta
+    output: iteration-01/database/V.fasta
+    jobid: 27
+    wildcards: gene=V
+
+cp -p database/V.fasta iteration-01/database/V.fasta
+
+[Wed Sep 25 21:53:53 2019]
+rule copy_d_database:
+    input: database/D.fasta
+    output: final/database/D.fasta
+    jobid: 35
+    wildcards: base=final
+
+cp -p database/D.fasta final/database/D.fasta
+
+[Wed Sep 25 21:53:53 2019]
+rule gzip_limited:
+    input: reads.2.fastq
+    output: reads/1-limited.2.fastq.gz
+    jobid: 45
+    wildcards: nr=2., ext=fastq
+
+pigz < reads.2.fastq > reads/1-limited.2.fastq.gz
+[Wed Sep 25 21:53:53 2019]
+Finished job 27.
+1 of 46 steps (2%) done
+
+[Wed Sep 25 21:53:53 2019]
+rule dendrogram:
+    input: iteration-01/database/V.fasta
+    output: iteration-01/dendrogram_V.pdf
+    jobid: 4
+    wildcards: dir=iteration-01, gene=V
+
+igdiscover dendrogram --mark database/V.fasta iteration-01/database/V.fasta iteration-01/dendrogram_V.pdf
+[Wed Sep 25 21:53:53 2019]
+Finished job 35.
+2 of 46 steps (4%) done
+
+[Wed Sep 25 21:53:53 2019]
+rule copy_d_database:
+    input: database/D.fasta
+    output: iteration-01/database/D.fasta
+    jobid: 28
+    wildcards: base=iteration-01
+
+cp -p database/D.fasta iteration-01/database/D.fasta
+[Wed Sep 25 21:53:53 2019]
+Finished job 28.
+3 of 46 steps (7%) done
+
+[Wed Sep 25 21:53:53 2019]
+rule dendrogram:
+    input: iteration-01/database/D.fasta
+    output: iteration-01/dendrogram_D.pdf
+    jobid: 6
+    wildcards: dir=iteration-01, gene=D
+
+igdiscover dendrogram --mark database/D.fasta iteration-01/database/D.fasta iteration-01/dendrogram_D.pdf
+[Wed Sep 25 21:53:55 2019]
+Finished job 6.
+4 of 46 steps (9%) done
+
+[Wed Sep 25 21:53:55 2019]
+rule dendrogram:
+    input: final/database/D.fasta
+    output: final/dendrogram_D.pdf
+    jobid: 22
+    wildcards: dir=final, gene=D
+
+igdiscover dendrogram --mark database/D.fasta final/database/D.fasta final/dendrogram_D.pdf
+[Wed Sep 25 21:53:55 2019]
+Finished job 4.
+5 of 46 steps (11%) done
+
+[Wed Sep 25 21:53:55 2019]
+rule vj_database_iteration_1:
+    input: database/J.fasta
+    output: iteration-01/database/J.fasta
+    jobid: 29
+    wildcards: gene=J
+
+cp -p database/J.fasta iteration-01/database/J.fasta
+[Wed Sep 25 21:53:56 2019]
+Finished job 29.
+6 of 46 steps (13%) done
+
+[Wed Sep 25 21:53:56 2019]
+rule dendrogram:
+    input: iteration-01/database/J.fasta
+    output: iteration-01/dendrogram_J.pdf
+    jobid: 8
+    wildcards: dir=iteration-01, gene=J
+
+igdiscover dendrogram --mark database/J.fasta iteration-01/database/J.fasta iteration-01/dendrogram_J.pdf
+[Wed Sep 25 21:53:57 2019]
+Finished job 22.
+7 of 46 steps (15%) done
+[Wed Sep 25 21:53:57 2019]
+Finished job 8.
+8 of 46 steps (17%) done
+[Wed Sep 25 21:54:00 2019]
+Finished job 44.
+9 of 46 steps (20%) done
+[Wed Sep 25 21:54:00 2019]
+Finished job 45.
+10 of 46 steps (22%) done
+
+[Wed Sep 25 21:54:00 2019]
+rule pear_merge:
+    input: reads/1-limited.1.fastq.gz, reads/1-limited.2.fastq.gz
+    output: reads/2-merged.fastq.gz, reads/2-pear.log
+    log: reads/2-pear.log
+    jobid: 40
+    threads: 4
+    resources: time=60
+
+igdiscover merge -j 4 reads/1-limited.1.fastq.gz reads/1-limited.2.fastq.gz reads/2-merged.fastq.gz | tee reads/2-pear.log
+[Wed Sep 25 21:55:05 2019]
+Finished job 40.
+11 of 46 steps (24%) done
+
+[Wed Sep 25 21:55:05 2019]
+rule parse_pear_stats:
+    input: reads/2-pear.log
+    output: stats/reads.json
+    jobid: 31
+
+[Wed Sep 25 21:55:05 2019]
+Finished job 31.
+12 of 46 steps (26%) done
+
+[Wed Sep 25 21:55:05 2019]
+rule check_merging:
+    input: stats/reads.json
+    output: stats/merging-successful
+    jobid: 13
+
+[Wed Sep 25 21:55:05 2019]
+Finished job 13.
+13 of 46 steps (28%) done
+
+[Wed Sep 25 21:55:05 2019]
+rule dont_trim_forward_primers:
+    input: reads/2-merged.fastq.gz, stats/merging-successful
+    output: reads/3-forward-primer-trimmed.fastq.gz
+    jobid: 43
+    wildcards: ext=fastq
+    resources: time=1
+
+[Wed Sep 25 21:55:06 2019]
+Finished job 43.
+14 of 46 steps (30%) done
+
+[Wed Sep 25 21:55:06 2019]
+rule dont_trim_reverse_primers:
+    input: reads/3-forward-primer-trimmed.fastq.gz
+    output: reads/4-trimmed.fastq.gz
+    jobid: 39
+    wildcards: ext=fastq
+    resources: time=1
+
+[Wed Sep 25 21:55:06 2019]
+Finished job 39.
+15 of 46 steps (33%) done
+
+[Wed Sep 25 21:55:06 2019]
+rule trimmed_fastq_stats:
+    input: reads/4-trimmed.fastq.gz
+    output: stats/trimmed.json
+    jobid: 32
+
+[Wed Sep 25 21:55:07 2019]
+Finished job 32.
+16 of 46 steps (35%) done
+
+[Wed Sep 25 21:55:07 2019]
+rule check_trimming:
+    input: stats/reads.json, stats/trimmed.json
+    output: stats/trimming-successful
+    jobid: 14
+
+[Wed Sep 25 21:55:07 2019]
+Finished job 14.
+17 of 46 steps (37%) done
+
+[Wed Sep 25 21:55:07 2019]
+rule 20:
+    input: reads/4-trimmed.fastq.gz, stats/trimming-successful
+    output: reads/sequences.fasta.gz, stats/groups.json
+    jobid: 30
+
+igdiscover dereplicate --json=stats/groups.json --minimum-length=300 reads/4-trimmed.fastq.gz | pigz > reads/sequences.fasta.gz
+[Wed Sep 25 21:55:11 2019]
+Finished job 30.
+18 of 46 steps (39%) done
+
+[Wed Sep 25 21:55:11 2019]
+rule igdiscover_igblast:
+    input: reads/sequences.fasta.gz, iteration-01/database/V.fasta, iteration-01/database/D.fasta, iteration-01/database/J.fasta
+    output: iteration-01/assigned.tab.gz, iteration-01/stats/assigned.json
+    log: iteration-01/igblast.log
+    jobid: 37
+    wildcards: dir=iteration-01
+    threads: 4
+
+time igdiscover igblast --sequence-type=Ig --threads=4 --stats=iteration-01/stats/assigned.json iteration-01/database reads/sequences.fasta.gz | pigz 2>&1 > iteration-01/assigned.tab.gz | tee iteration-01/igblast.log >&2
+[Wed Sep 25 22:14:39 2019]
+Finished job 37.
+19 of 46 steps (41%) done
+
+[Wed Sep 25 22:14:39 2019]
+rule read_length_histogram:
+    input: reads/sequences.fasta.gz
+    output: stats/readlengths.txt, stats/readlengths.pdf
+    jobid: 12
+
+sqt readlenhisto --bins 100 --left 300 --title "Lengths of pre-processed reads" --plot stats/readlengths.pdf reads/sequences.fasta.gz  > stats/readlengths.txt
+
+[Wed Sep 25 22:14:39 2019]
+rule check_parsing:
+    input: iteration-01/stats/assigned.json
+    output: iteration-01/stats/parsing-successful
+    jobid: 38
+    wildcards: dir=iteration-01
+
+[Wed Sep 25 22:14:39 2019]
+Finished job 38.
+20 of 46 steps (43%) done
+
+[Wed Sep 25 22:14:39 2019]
+rule igdiscover_filter:
+    input: iteration-01/assigned.tab.gz, iteration-01/stats/parsing-successful
+    output: iteration-01/filtered.tab.gz, iteration-01/stats/filtered.json
+    jobid: 26
+    wildcards: dir=iteration-01
+
+[Wed Sep 25 22:14:41 2019]
+Finished job 12.
+21 of 46 steps (46%) done
+[Wed Sep 25 22:14:54 2019]
+Finished job 26.
+22 of 46 steps (48%) done
+
+[Wed Sep 25 22:14:54 2019]
+rule igdiscover_discover:
+    input: iteration-01/database/V.fasta, iteration-01/filtered.tab.gz
+    output: iteration-01/candidates.tab, iteration-01/read_names_map.tab
+    jobid: 9
+    wildcards: dir=iteration-01
+    threads: 4
+
+time igdiscover discover -j 4 --seed=1 --d-coverage=70 --read-names=iteration-01/read_names_map.tab --subsample=1000 --database=iteration-01/database/V.fasta iteration-01/filtered.tab.gz > iteration-01/candidates.tab
+[Wed Sep 25 22:18:20 2019]
+Finished job 9.
+23 of 46 steps (50%) done
+
+[Wed Sep 25 22:18:20 2019]
+rule igdiscover_count:
+    input: iteration-01/filtered.tab.gz
+    output: iteration-01/expressed_V.pdf, iteration-01/expressed_V.tab
+    jobid: 3
+    wildcards: dir=iteration-01, gene=V
+
+igdiscover count --gene=V --allele-ratio=0.2 --plot=iteration-01/expressed_V.pdf iteration-01/filtered.tab.gz > iteration-01/expressed_V.tab
+
+[Wed Sep 25 22:18:20 2019]
+rule plot_errorhistograms:
+    input: iteration-01/filtered.tab.gz
+    output: iteration-01/errorhistograms.pdf, iteration-01/v-shm-distributions.pdf
+    jobid: 2
+    wildcards: dir=iteration-01
+
+igdiscover errorplot --multi=iteration-01/errorhistograms.pdf --boxplot=iteration-01/v-shm-distributions.pdf iteration-01/filtered.tab.gz
+
+[Wed Sep 25 22:18:20 2019]
+rule igdiscover_count:
+    input: iteration-01/filtered.tab.gz
+    output: iteration-01/expressed_D.pdf, iteration-01/expressed_D.tab
+    jobid: 5
+    wildcards: dir=iteration-01, gene=D
+
+igdiscover count --gene=D --allele-ratio=0.2 --plot=iteration-01/expressed_D.pdf iteration-01/filtered.tab.gz > iteration-01/expressed_D.tab
+
+[Wed Sep 25 22:18:20 2019]
+rule igdiscover_discover_j:
+    input: iteration-01/database/J.fasta, iteration-01/filtered.tab.gz
+    output: iteration-01/new_J.tab, iteration-01/new_J.fasta
+    jobid: 16
+
+time igdiscover discoverj --allele-ratio=0.2 --cross-mapping-ratio=0.1 --database=iteration-01/database/J.fasta --fasta=iteration-01/new_J.fasta iteration-01/filtered.tab.gz > iteration-01/new_J.tab
+[Wed Sep 25 22:18:23 2019]
+Finished job 5.
+24 of 46 steps (52%) done
+
+[Wed Sep 25 22:18:23 2019]
+rule igdiscover_count:
+    input: iteration-01/filtered.tab.gz
+    output: iteration-01/expressed_J.pdf, iteration-01/expressed_J.tab
+    jobid: 7
+    wildcards: dir=iteration-01, gene=J
+
+igdiscover count --gene=J --allele-ratio=0.2 --plot=iteration-01/expressed_J.pdf iteration-01/filtered.tab.gz > iteration-01/expressed_J.tab
+[Wed Sep 25 22:18:23 2019]
+Finished job 3.
+25 of 46 steps (54%) done
+
+[Wed Sep 25 22:18:23 2019]
+rule igdiscover_clusterplot:
+    input: iteration-01/filtered.tab.gz
+    output: iteration-01/clusterplots/done
+    jobid: 1
+    wildcards: dir=iteration-01
+
+igdiscover clusterplot iteration-01/filtered.tab.gz iteration-01/clusterplots/ && touch iteration-01/clusterplots/done
+[Wed Sep 25 22:18:25 2019]
+Finished job 16.
+26 of 46 steps (57%) done
+
+[Wed Sep 25 22:18:25 2019]
+rule igdiscover_germlinefilter:
+    input: iteration-01/candidates.tab, database/V.fasta
+    output: iteration-01/new_V_germline.tab, iteration-01/new_V_germline.fasta, iteration-01/annotated_V_germline.tab
+    log: iteration-01/new_V_germline.log
+    jobid: 10
+    wildcards: nr=01, pre=
+
+igdiscover germlinefilter --whitelist=database/V.fasta --unique-CDR3=5 --cluster-size=100 --unique-J=1 --cross-mapping-ratio=0.02 --clonotype-ratio=0.12 --exact-ratio=0.12 --cdr3-shared-ratio=0.8 --unique-D-ratio=0.3 --unique-D-threshold=10 --annotate=iteration-01/annotated_V_germline.tab --fasta=iteration-01/new_V_germline.fasta iteration-01/candidates.tab  2> >(tee iteration-01/new_V_germline.log >&2)  > iteration-01/new_V_germline.tab
+[Wed Sep 25 22:18:26 2019]
+Finished job 10.
+27 of 46 steps (59%) done
+
+[Wed Sep 25 22:18:26 2019]
+rule igdiscover_germlinefilter:
+    input: iteration-01/candidates.tab, database/V.fasta
+    output: iteration-01/new_V_pregermline.tab, iteration-01/new_V_pregermline.fasta, iteration-01/annotated_V_pregermline.tab
+    log: iteration-01/new_V_pregermline.log
+    jobid: 11
+    wildcards: nr=01, pre=pre
+
+igdiscover germlinefilter --whitelist=database/V.fasta --allow-stop --unique-CDR3=2 --cluster-size=0 --unique-J=1 --cross-mapping-ratio=0.02 --clonotype-ratio=0.12 --exact-ratio=0.12 --cdr3-shared-ratio=0.8 --unique-D-ratio=0.3 --unique-D-threshold=10 --annotate=iteration-01/annotated_V_pregermline.tab --fasta=iteration-01/new_V_pregermline.fasta iteration-01/candidates.tab  2> >(tee iteration-01/new_V_pregermline.log >&2)  > iteration-01/new_V_pregermline.tab
+[Wed Sep 25 22:18:26 2019]
+Finished job 2.
+28 of 46 steps (61%) done
+
+[Wed Sep 25 22:18:26 2019]
+rule copy_final_v_database:
+    input: iteration-01/new_V_germline.fasta
+    output: final/database/V.fasta
+    jobid: 34
+
+[Wed Sep 25 22:18:27 2019]
+Finished job 7.
+29 of 46 steps (63%) done
+
+[Wed Sep 25 22:18:27 2019]
+rule copy_final_j_database:
+    input: iteration-01/new_J.fasta
+    output: final/database/J.fasta
+    jobid: 36
+
+[Wed Sep 25 22:18:27 2019]
+Finished job 34.
+30 of 46 steps (65%) done
+
+[Wed Sep 25 22:18:27 2019]
+rule dendrogram:
+    input: final/database/V.fasta
+    output: final/dendrogram_V.pdf
+    jobid: 20
+    wildcards: dir=final, gene=V
+
+igdiscover dendrogram --mark database/V.fasta final/database/V.fasta final/dendrogram_V.pdf
+[Wed Sep 25 22:18:27 2019]
+Finished job 36.
+31 of 46 steps (67%) done
+
+[Wed Sep 25 22:18:27 2019]
+rule dendrogram:
+    input: final/database/J.fasta
+    output: final/dendrogram_J.pdf
+    jobid: 24
+    wildcards: dir=final, gene=J
+
+igdiscover dendrogram --mark database/J.fasta final/database/J.fasta final/dendrogram_J.pdf
+[Wed Sep 25 22:18:28 2019]
+Finished job 11.
+32 of 46 steps (70%) done
+
+[Wed Sep 25 22:18:28 2019]
+rule json_stats_nofinal:
+    input: database/V.fasta, iteration-01/new_V_pregermline.fasta, iteration-01/new_V_germline.fasta, iteration-01/stats/filtered.json, stats/groups.json, stats/reads.json, stats/trimmed.json
+    output: stats/stats_nofinal.json
+    jobid: 15
+
+[Wed Sep 25 22:18:28 2019]
+Finished job 20.
+33 of 46 steps (72%) done
+[Wed Sep 25 22:18:28 2019]
+Finished job 24.
+34 of 46 steps (74%) done
+[Wed Sep 25 22:18:28 2019]
+Finished job 15.
+35 of 46 steps (76%) done
+[Wed Sep 25 22:19:11 2019]
+Finished job 1.
+36 of 46 steps (78%) done
+
+[Wed Sep 25 22:19:11 2019]
+rule igdiscover_igblast:
+    input: reads/sequences.fasta.gz, final/database/V.fasta, final/database/D.fasta, final/database/J.fasta
+    output: final/assigned.tab.gz, final/stats/assigned.json
+    log: final/igblast.log
+    jobid: 41
+    wildcards: dir=final
+    threads: 4
+
+time igdiscover igblast --sequence-type=Ig --threads=4 --stats=final/stats/assigned.json final/database reads/sequences.fasta.gz | pigz 2>&1 > final/assigned.tab.gz | tee final/igblast.log >&2
+[Wed Sep 25 22:34:43 2019]
+Finished job 41.
+37 of 46 steps (80%) done
+
+[Wed Sep 25 22:34:43 2019]
+rule check_parsing:
+    input: final/stats/assigned.json
+    output: final/stats/parsing-successful
+    jobid: 42
+    wildcards: dir=final
+
+[Wed Sep 25 22:34:43 2019]
+Finished job 42.
+38 of 46 steps (83%) done
+
+[Wed Sep 25 22:34:43 2019]
+rule igdiscover_filter:
+    input: final/assigned.tab.gz, final/stats/parsing-successful
+    output: final/filtered.tab.gz, final/stats/filtered.json
+    jobid: 33
+    wildcards: dir=final
+
+[Wed Sep 25 22:34:58 2019]
+Finished job 33.
+39 of 46 steps (85%) done
+
+[Wed Sep 25 22:34:58 2019]
+rule igdiscover_count:
+    input: final/filtered.tab.gz
+    output: final/expressed_J.pdf, final/expressed_J.tab
+    jobid: 23
+    wildcards: dir=final, gene=J
+
+igdiscover count --gene=J --allele-ratio=0.2 --plot=final/expressed_J.pdf final/filtered.tab.gz > final/expressed_J.tab
+
+[Wed Sep 25 22:34:58 2019]
+rule igdiscover_clusterplot:
+    input: final/filtered.tab.gz
+    output: final/clusterplots/done
+    jobid: 17
+    wildcards: dir=final
+
+igdiscover clusterplot final/filtered.tab.gz final/clusterplots/ && touch final/clusterplots/done
+
+[Wed Sep 25 22:34:58 2019]
+rule plot_errorhistograms:
+    input: final/filtered.tab.gz
+    output: final/errorhistograms.pdf, final/v-shm-distributions.pdf
+    jobid: 18
+    wildcards: dir=final
+
+igdiscover errorplot --multi=final/errorhistograms.pdf --boxplot=final/v-shm-distributions.pdf final/filtered.tab.gz
+
+[Wed Sep 25 22:34:58 2019]
+rule igdiscover_count:
+    input: final/filtered.tab.gz
+    output: final/expressed_V.pdf, final/expressed_V.tab
+    jobid: 19
+    wildcards: dir=final, gene=V
+
+igdiscover count --gene=V --allele-ratio=0.2 --plot=final/expressed_V.pdf final/filtered.tab.gz > final/expressed_V.tab
+[Wed Sep 25 22:35:02 2019]
+Finished job 23.
+40 of 46 steps (87%) done
+
+[Wed Sep 25 22:35:02 2019]
+rule igdiscover_count:
+    input: final/filtered.tab.gz
+    output: final/expressed_D.pdf, final/expressed_D.tab
+    jobid: 21
+    wildcards: dir=final, gene=D
+
+igdiscover count --gene=D --allele-ratio=0.2 --plot=final/expressed_D.pdf final/filtered.tab.gz > final/expressed_D.tab
+[Wed Sep 25 22:35:02 2019]
+Finished job 19.
+41 of 46 steps (89%) done
+
+[Wed Sep 25 22:35:02 2019]
+rule json_stats:
+    input: stats/stats_nofinal.json, final/stats/filtered.json
+    output: stats/stats.json
+    jobid: 25
+
+[Wed Sep 25 22:35:02 2019]
+Finished job 18.
+42 of 46 steps (91%) done
+[Wed Sep 25 22:35:02 2019]
+Finished job 25.
+43 of 46 steps (93%) done
+[Wed Sep 25 22:35:04 2019]
+Finished job 21.
+44 of 46 steps (96%) done
+[Wed Sep 25 22:35:09 2019]
+Finished job 17.
+45 of 46 steps (98%) done
+
+[Wed Sep 25 22:35:09 2019]
+Job 0: IgDiscover finished.
+
+[Wed Sep 25 22:35:09 2019]
+Finished job 0.
+46 of 46 steps (100%) done
+Complete log: /home/mkofia/Documents/Bovine_experiment/.snakemake/log/2019-09-25T215353.446588.snakemake.log
