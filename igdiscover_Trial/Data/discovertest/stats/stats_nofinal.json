@@ -1,0 +1,39 @@
+{
+  "version": "0.11",
+  "read_preprocessing": {
+    "total": 7811,
+    "merged": 7811,
+    "merging_was_done": true,
+    "raw_reads": 7811,
+    "after_primer_trimming": 7811,
+    "grouping": {
+      "groups_written": 7811
+    }
+  },
+  "iterations": [
+    {
+      "database": {
+        "size": 44
+      }
+    },
+    {
+      "assignment_filtering": {
+        "total": 7811,
+        "has_vj_assignment": 7811,
+        "has_no_stop": 7811,
+        "good_v_evalue": 7811,
+        "good_v_coverage": 7811,
+        "good_j_coverage": 7811,
+        "has_cdr3": 7795
+      },
+      "database": {
+        "size": 10,
+        "gained": 5,
+        "lost": 39,
+        "size_pre": 29,
+        "gained_pre": 24,
+        "lost_pre": 39
+      }
+    }
+  ]
+}

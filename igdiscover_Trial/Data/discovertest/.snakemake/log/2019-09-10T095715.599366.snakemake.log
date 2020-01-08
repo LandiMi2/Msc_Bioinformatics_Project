@@ -1,0 +1,56 @@
+Building DAG of jobs...
+Using shell: /bin/bash
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	20
+	1	all
+	1	check_merging
+	2	check_parsing
+	1	check_trimming
+	1	copy_final_j_database
+	1	copy_final_v_database
+	2	dendrogram
+	1	dont_trim_forward_primers
+	1	dont_trim_reverse_primers
+	2	igdiscover_clusterplot
+	6	igdiscover_count
+	1	igdiscover_discover
+	1	igdiscover_discover_j
+	2	igdiscover_filter
+	2	igdiscover_germlinefilter
+	2	igdiscover_igblast
+	1	json_stats
+	1	json_stats_nofinal
+	1	parse_pear_stats
+	1	pear_merge
+	2	plot_errorhistograms
+	1	read_length_histogram
+	1	trimmed_fastq_stats
+	36
+
+[Tue Sep 10 09:57:15 2019]
+rule pear_merge:
+    input: reads/1-limited.1.fastq.gz, reads/1-limited.2.fastq.gz
+    output: reads/2-merged.fastq.gz, reads/2-pear.log
+    log: reads/2-pear.log
+    jobid: 40
+    threads: 4
+    resources: time=60
+
+igdiscover merge -j 4 reads/1-limited.1.fastq.gz reads/1-limited.2.fastq.gz reads/2-merged.fastq.gz | tee reads/2-pear.log
+[Tue Sep 10 09:57:16 2019]
+Error in rule pear_merge:
+    jobid: 40
+    output: reads/2-merged.fastq.gz, reads/2-pear.log
+    log: reads/2-pear.log (check log file(s) for error message)
+    shell:
+        igdiscover merge -j 4 reads/1-limited.1.fastq.gz reads/1-limited.2.fastq.gz reads/2-merged.fastq.gz | tee reads/2-pear.log
+        (exited with non-zero exit code)
+
+Removing output files of failed job pear_merge since they might be corrupted:
+reads/2-pear.log
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /home/cofia/Documents/Project/Msc_Bioinformatics_Project/igdiscover_Trial/Data/discovertest/.snakemake/log/2019-09-10T095715.599366.snakemake.log
