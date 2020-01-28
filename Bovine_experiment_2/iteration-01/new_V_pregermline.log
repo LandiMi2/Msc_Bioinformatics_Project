@@ -1,0 +1,11 @@
+INFO: 27 unique sequences in whitelist
+INFO: Marked 0 candidates as 'too_low_dbdiff'
+INFO: Marked 65 candidates as 'too_low_CDR3s_exact'
+INFO: Marked 118 candidates as 'too_high_CDR3_shared_ratio'
+INFO: Marked 3 candidates as 'too_low_Js_exact'
+INFO: Marked 0 candidates as 'too_low_cluster_size'
+INFO: Table read from 'iteration-01/candidates.tab' contains 188 candidate V gene sequences. 65 remain after per-entry filtering
+INFO: Of those, 4 are protected by the whitelist
+INFO: Marked 13 candidates as 'is_duplicate'
+INFO: 52 sequences in new database
+INFO: CPU time 00:00:00.9. Maximum memory usage 0.149 GB
