@@ -42,6 +42,20 @@ then convert the fastq assembled file to fasta for annotation
 
 2. Assemble read 1 and 2 for annotation by IgBlast and IMGT
 
+use awk to modify header ......(validate this step)
+
+`pear -f human_simulated_changed_header_R1.fq -r human_simulated_changed_header_R2.fq -o human_simulated_pear_modified`
+
+convert fastq to fasta 
+
+
+3. Run Igblast 
+
+` ./bin/igblastn -query ../human_simulated_pear_modified.assembled.fasta -germline_db_V ./bin/human_database/IGHV.fa -germline_db_D ./bin/human_database/IGHD.fa -germline_db_J ./bin/human_database/IGHJ.fa -outfmt 19 -auxiliary_data ./optional_file/human_gl.aux -out ../human_simulated_igblast_assembly_pear_modified.tsv`
+
+
+
+
 
 
 
