@@ -26,4 +26,17 @@ mofidy the header of the simulated reads using awk
 
 validate this command
 
+**Human Trial Simulation**
+
+1. Simulate human read 1 and read 2
+
+`./ig_simulator.py --chain-type HC --num-bases 100000 --num-mutated 200000 --repertoire-size 500000 --vgenes ./data/human_ig_germline_genes_upadated/human_IGHV.fa --dgenes ./data/human_ig_germline_genes_upadated/human_IGHD.fa --jgenes ./data/human_ig_germline_genes_upadated/human_IGHJ.fa -o Human_IgSimulation_Trial`
+
+2. Assemble read 1 and 2 for annotation by IgBlast and IMGT
+
+
+
+
+
+
 
