@@ -26,6 +26,14 @@ mofidy the header of the simulated reads using awk
 
 validate this command
 
+**NB you can assemble the reads independently using pear**
+
+`pear -f simulated_reads1.fq -r simulated_reads2.fq -o simulated_pear`
+
+then convert the fastq assembled file to fasta for annotation 
+
+`seqtk seq -A simulated_pear.assembled.fastq > simulated_pear.assembled.fasta`
+
 **Human Trial Simulation**
 
 1. Simulate human read 1 and read 2
