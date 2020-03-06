@@ -34,24 +34,23 @@ then convert the fastq assembled file to fasta for annotation
 
 `seqtk seq -A simulated_pear.assembled.fastq > simulated_pear.assembled.fasta`
 
-**Human Trial Simulation**
+**Assembly step is no longer important for this analysis, use merged.fastq file for annotation**
 
-1. Simulate human read 1 and read 2
+**To have a similar mixcr output as igblast & imgt**
 
-`./ig_simulator.py --chain-type HC --num-bases 100000 --num-mutated 200000 --repertoire-size 500000 --vgenes ./data/human_ig_germline_genes_upadated/human_IGHV.fa --dgenes ./data/human_ig_germline_genes_upadated/human_IGHD.fa --jgenes ./data/human_ig_germline_genes_upadated/human_IGHJ.fa -o Human_IgSimulation_Trial`
+Realign your reads, but this time use `-OsaveOriginalReads=true`  this parameter 
 
-2. Assemble read 1 and 2 for annotation by IgBlast and IMGT
+`mixcr align -s bovine --library imgt.201948-5.sv3.0.12.json.gz -p rna-seq -OsaveOriginalReads=true --report trial_simulated.txt ../mixcr_simulated_data/Annotation_500,000_rep/simulated_reads1.fq ../mixcr_simulated_data/Annotation_500,000_rep/simulated_reads2.fq trial_simulated.vdjca`
 
-use awk to modify header ......(validate this step)
+next export your alignment, for this case you are intrested with sequence ID, Vcall, Dcall and Jcall. In the export command `-descrsR1` flag is used. 
 
-`pear -f human_simulated_changed_header_R1.fq -r human_simulated_changed_header_R2.fq -o human_simulated_pear_modified`
+` mixcr exportAlignments  -vHits -dHits -jHits trial_simulated.vdjca simulated_alignments.txt`
 
-convert fastq to fasta 
+You good to go....:smile:!!
 
 
-3. Run Igblast 
 
-` ./bin/igblastn -query ../human_simulated_pear_modified.assembled.fasta -germline_db_V ./bin/human_database/IGHV.fa -germline_db_D ./bin/human_database/IGHD.fa -germline_db_J ./bin/human_database/IGHJ.fa -outfmt 19 -auxiliary_data ./optional_file/human_gl.aux -out ../human_simulated_igblast_assembly_pear_modified.tsv`
+
 
 
 
