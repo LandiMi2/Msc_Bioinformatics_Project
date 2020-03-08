@@ -361,6 +361,258 @@ comparison_Jcall_imgt_wo_space[6, ]
 imgt_Jcall_hit_table_wo_space <- table(comparison_Jcall_imgt_wo_space$HIT)
 imgt_Jcall_hit_table_wo_space
 
+############################################## mixcr analysis ##############################
+#read mixcr annotation output 
+mixcr <-read.table("./MIXCR/Simulated_data/simulated_alignments.txt", header = TRUE, sep = "\t")
+#rename column names 
+colnames(mixcr) <- c("Sequence_ID", "Vcall", "Dcall", "Jcall")
+
+#read read_vdj_recombination file 
+read_vdj_mixcr <- read.table("./read_vdj.txt", header = F, sep = ";")
+colnames(read_vdj_mixcr) <- c("Antibidy_ID", "V_call", "D_call", "J_call")
+
+head(read_vdj_mixcr)
+#modify the first column to match mixcr sequence ID 
+read_vdj_mixcr$Antibidy_ID <- gsub("_merged_read_", "", read_vdj_mixcr$Antibidy_ID)
+read_vdj_mixcr$Antibidy_ID <- gsub("^[0-9]+", "", read_vdj_mixcr$Antibidy_ID)
+
+head(read_vdj_mixcr)
+head(mixcr)
+
+
+###################################### V call analysis ########################################
+mixcr_Vcall <- data.frame(mixcr$Sequence_ID, mixcr$Vcall)
+head(mixcr_Vcall)
+
+read_vdj_mixcr_Vcall <- data.frame(read_vdj_mixcr$Antibidy_ID, read_vdj_mixcr$V_call)
+head(read_vdj_mixcr_Vcall)
+#modify V call column 
+mixcr_Vcall$mixcr.Vcall <- gsub("Bostau_", "", mixcr_Vcall$mixcr.Vcall)
+
+#merge the two files
+compare_mixcr_Vcall <- merge(data.frame(mixcr_Vcall), data.frame(read_vdj_mixcr_Vcall), by.x = "mixcr.Sequence_ID", 
+                       by.y = "read_vdj_mixcr.Antibidy_ID", all = TRUE)
+
+
+#create a HIT column 
+compare_mixcr_Vcall$HIT <- NA
+
+#where there is match print TRUE and vice versa
+compare_mixcr_Vcall$HIT <- as.character(compare_mixcr_Vcall$mixcr.Vcall) == as.character(compare_mixcr_Vcall$read_vdj_mixcr.V_call)
+
+#create frequency table of hits and mishits for Vgene
+mixcr_Vcall_hit_table <- table(compare_mixcr_Vcall$HIT)
+mixcr_Vcall_hit_table
+
+######################################## D call analysis ########################################
+mixcr_Dcall <- data.frame(mixcr$Sequence_ID, mixcr$Dcall)
+head(mixcr_Dcall)
+
+read_vdj_mixcr_Dcall <- data.frame(read_vdj_mixcr$Antibidy_ID, read_vdj_mixcr$D_call)
+head(read_vdj_mixcr_Dcall)
+#modify V call column 
+mixcr_Dcall$mixcr.Dcall <- gsub("Bostau_", "", mixcr_Dcall$mixcr.Dcall)
+
+#merge the two files
+compare_mixcr_Dcall <- merge(data.frame(mixcr_Dcall), data.frame(read_vdj_mixcr_Dcall), by.x = "mixcr.Sequence_ID", 
+                       by.y = "read_vdj_mixcr.Antibidy_ID", all = TRUE)
+
+head(compare_mixcr_Dcall)
+#create a HIT column 
+compare_mixcr_Dcall$HIT <- NA
+
+#where there is match print TRUE and vice versa
+compare_mixcr_Dcall$HIT <- as.character(compare_mixcr_Dcall$mixcr.Dcall) == as.character(compare_mixcr_Dcall$read_vdj_mixcr.D_call)
+
+#create frequency table of hits and mishits for Vgene
+mixcr_Dcall_hit_table <- table(compare_mixcr_Dcall$HIT)
+mixcr_Dcall_hit_table
+
+######################################## J call analysis ########################################
+mixcr_Jcall <- data.frame(mixcr$Sequence_ID, mixcr$Jcall)
+head(mixcr_Jcall)
+
+read_vdj_mixcr_Jcall <- data.frame(read_vdj_mixcr$Antibidy_ID, read_vdj_mixcr$J_call)
+head(read_vdj_mixcr_Jcall)
+#modify V call column 
+mixcr_Jcall$mixcr.Jcall <- gsub("Bostau_", "", mixcr_Jcall$mixcr.Jcall)
+
+#merge the two files
+compare_mixcr_Jcall <- merge(data.frame(mixcr_Jcall), data.frame(read_vdj_mixcr_Jcall), by.x = "mixcr.Sequence_ID", 
+                             by.y = "read_vdj_mixcr.Antibidy_ID", all = TRUE)
+
+head(compare_mixcr_Jcall)
+#create a HIT column 
+compare_mixcr_Jcall$HIT <- NA
+
+#where there is match print TRUE and vice versa
+compare_mixcr_Jcall$HIT <- as.character(compare_mixcr_Jcall$mixcr.Jcall) == as.character(compare_mixcr_Jcall$read_vdj_mixcr.J_call)
+head(compare_mixcr_Jcall)
+#create frequency table of hits and mishits for Vgene
+mixcr_Jcall_hit_table <- table(compare_mixcr_Jcall$HIT)
+mixcr_Jcall_hit_table
+
+########################################### combine V, D, J calls mishit data for all tools ###################################################
+#Igblast VDJ call 
+igblast_Vcall_hit_table #False 38003  ,  True 382665 
+igblast_Dcall_hit_table #False 178229 ,  True 242439 
+igblast_Jcall_hit_table #False 203314 ,  True 217354 
+#IMGT VDJ call 
+imgt_Vcall_hit_table  #False 46234 , True 374434 
+imgt_Dcall_hit_table #False 291328 , True 129340
+imgt_Jcall_hit_table #False 211982 , True 208686 
+#MiXCR VDJ call 
+mixcr_Vcall_hit_table #False 152931 , True 116741
+mixcr_Dcall_hit_table #False 115539 , True 154133 
+mixcr_Jall_hit_table #False 99204 , True 170468
+
+#calculate the percentage frequencies for each tool True and False counts 
+#Igblast percentages
+#percentage igblast V call
+igblast_Vcall_hit_df <- as.data.frame(igblast_Vcall_hit_table)#convert table to dataframe 
+igblast_True_V_count <- igblast_Vcall_hit_df$Freq[2]
+igblast_False_V_count <- igblast_Vcall_hit_df$Freq[1]
+
+percent_igblast_V_call_hit <- round((igblast_True_V_count / (igblast_True_V_count + igblast_False_V_count)) * 100)
+percent_igblast_V_call_mishit <- round((igblast_False_V_count / (igblast_True_V_count + igblast_False_V_count)) * 100)
+
+  
+#percentage igblast D call
+igblast_Dcall_hit_df <- as.data.frame(igblast_Dcall_hit_table)#convert table to dataframe 
+igblast_True_D_count <- igblast_Dcall_hit_df$Freq[2]
+igblast_False_D_count <- igblast_Dcall_hit_df$Freq[1]
+percent_igblast_D_call_hit <- round((igblast_True_D_count / (igblast_True_D_count + igblast_False_D_count)) * 100)
+percent_igblast_D_call_mishit <- round((igblast_False_D_count / (igblast_True_D_count + igblast_False_D_count)) * 100)
+
+
+#percantage igblast J call 
+igblast_Jcall_hit_df <- as.data.frame(igblast_Jcall_hit_table)#convert table to dataframe 
+igblast_True_J_count <- igblast_Jcall_hit_df$Freq[2]
+igblast_False_J_count <- igblast_Jcall_hit_df$Freq[1]
+percent_igblast_J_call_hit <- round((igblast_True_J_count / (igblast_True_J_count + igblast_False_J_count)) * 100)
+percent_igblast_J_call_mishit <- round((igblast_False_J_count / (igblast_True_J_count + igblast_False_J_count)) * 100)
+
+#imgt percentages
+#percentages imgt V call 
+imgt_Vcall_hit_df <- as.data.frame(imgt_Vcall_hit_table)#convert table to dataframe 
+imgt_True_V_count <- imgt_Vcall_hit_df$Freq[2]
+imgt_False_V_count <- imgt_Vcall_hit_df$Freq[1]
+
+percent_imgt_V_call_hit <- round((imgt_True_V_count / (imgt_True_V_count + imgt_False_V_count)) * 100)
+percent_imgt_V_call_mishit <- round((imgt_False_V_count / (imgt_True_V_count + imgt_False_V_count)) * 100)
+
+
+
+#percentages imgt D call 
+imgt_Dcall_hit_df <- as.data.frame(imgt_Dcall_hit_table)#convert table to dataframe 
+imgt_True_D_count <- imgt_Dcall_hit_df$Freq[2]
+imgt_False_D_count <- imgt_Dcall_hit_df$Freq[1]
+percent_imgt_D_call_hit <- round((imgt_True_D_count / (imgt_True_D_count + imgt_False_D_count)) * 100)
+percent_imgt_D_call_mishit <- round((imgt_False_D_count / (imgt_True_D_count + imgt_False_D_count)) * 100)
+
+#percentages imgt J call 
+imgt_Jcall_hit_df <- as.data.frame(imgt_Jcall_hit_table)#convert table to dataframe 
+imgt_True_J_count <- imgt_Jcall_hit_df$Freq[2]
+imgt_False_J_count <- imgt_Jcall_hit_df$Freq[1]
+percent_imgt_J_call_hit <- round((imgt_True_J_count / (imgt_True_J_count + imgt_False_J_count)) * 100)
+percent_imgt_J_call_mishit <- round((imgt_False_J_count / (imgt_True_J_count + imgt_False_J_count)) * 100)
+
+#mixcr percentages
+#percentages mixcr V call 
+mixcr_Vcall_hit_df <- as.data.frame(mixcr_Vcall_hit_table)#convert table to dataframe 
+mixcr_True_V_count <- mixcr_Vcall_hit_df$Freq[2]
+mixcr_False_V_count <- mixcr_Vcall_hit_df$Freq[1]
+percent_mixcr_V_call_hit <- round((mixcr_True_V_count / (mixcr_True_V_count + mixcr_False_V_count)) * 100)
+percent_mixcr_V_call_mishit <- round((mixcr_False_V_count / (mixcr_True_V_count + mixcr_False_V_count)) * 100)
+
+#percentages mixcr D call 
+mixcr_Dcall_hit_df <- as.data.frame(mixcr_Dcall_hit_table)#convert table to dataframe 
+mixcr_True_D_count <- mixcr_Dcall_hit_df$Freq[2]
+mixcr_False_D_count <- mixcr_Dcall_hit_df$Freq[1]
+percent_mixcr_D_call_hit <- round((mixcr_True_D_count / (mixcr_True_D_count + mixcr_False_D_count)) * 100)
+percent_mixcr_D_call_mishit <- round((mixcr_False_D_count / (mixcr_True_D_count + mixcr_False_D_count)) * 100)
+
+#percentages mixcr J call 
+mixcr_Jcall_hit_df <- as.data.frame(mixcr_Jcall_hit_table)#convert table to dataframe 
+mixcr_True_J_count <- mixcr_Jcall_hit_df$Freq[2]
+mixcr_False_J_count <- mixcr_Jcall_hit_df$Freq[1]
+percent_mixcr_J_call_hit <- round((mixcr_True_J_count / (mixcr_True_J_count + mixcr_False_J_count)) * 100)
+percent_mixcr_J_call_mishit <- round((mixcr_False_J_count / (mixcr_True_J_count + mixcr_False_J_count)) * 100)
+
+
+#Make a plot for hits and mishits for the three tools
+
+#create a martrix for the percentage hits 
+percent_hit_matrix <- matrix(c(percent_igblast_V_call_hit, percent_mixcr_V_call_hit, percent_imgt_V_call_hit,
+                               percent_igblast_D_call_hit, percent_mixcr_D_call_hit, percent_imgt_D_call_hit,
+                               percent_igblast_J_call_hit, percent_mixcr_J_call_hit, percent_imgt_J_call_hit), ncol = 3, byrow = TRUE)
+
+percent_hit_matrix
+colnames(percent_hit_matrix) <- c("IgBlast", "MiXCR", "IMGT")
+rownames(percent_hit_matrix) <- c("Vcall", "Dcall", "Jcall")
+
+#convert the martrix to a table so that we can start to analysis these counts 
+percent_hit_table <- as.table(percent_hit_matrix)
+percent_hit_table
+
+hit_plot <- barplot(percent_hit_table, legend.text = T, beside = TRUE, ylim=c(0,100), col = c("red", "green", "blue"), 
+        main = "Predicted percentage hit of annotation tools")
+
+#add text ontop of the bar plots 
+text(x = hit_plot, y = percent_hit_table, labels = percent_hit_table,  pos = 3,)
+
+#create a martrix for the percentage mishits 
+percent_mishit_matrix <- matrix(c(percent_igblast_V_call_mishit, percent_mixcr_V_call_mishit, percent_imgt_V_call_mishit,
+                               percent_igblast_D_call_mishit, percent_mixcr_D_call_mishit, percent_imgt_D_call_mishit,
+                               percent_igblast_J_call_mishit, percent_mixcr_J_call_mishit, percent_imgt_J_call_mishit), ncol = 3, byrow = TRUE)
+
+percent_mishit_matrix
+colnames(percent_mishit_matrix) <- c("IgBlast", "MiXCR", "IMGT")
+rownames(percent_mishit_matrix) <- c("Vcall", "Dcall", "Jcall")
+
+#convert the martrix to a table so that we can start to analysis these counts 
+percent_mishit_table <- as.table(percent_mishit_matrix)
+percent_mishit_table
+
+mishit_plot <- barplot(percent_mishit_table, legend.text =T,args.legend = list(x = 'top'), beside = TRUE, ylim=c(0,100), col = c("red", "green", "blue"), 
+        main = "Predicted percentage error rate of annotation tools")
+
+#add text ontop of the bar plots 
+text(x = mishit_plot, y = percent_mishit_table, labels = percent_mishit_table,  pos = 3,)
+
+
+#unassigned calls in percentage for D call and J call for IgBlast
+
+percent_unassigned_Dcall_igblast <- round(((nrow(comparison_Dcall_Igblast) - nrow(comparison_Dcall_Igblast_wo_space))) / 
+  nrow(comparison_Dcall_Igblast) * 100)
+# 2
+percent_unassigned_Jcall_igblast <- round(((nrow(comparison_Jcall_Igblast) - nrow(comparison_Jcall_Igblast_wo_space))) / 
+  nrow(comparison_Jcall_Igblast) * 100)
+#27
+
+#unassigned calls in percentage for D and J calls for IMGT
+percent_unassigned_Dcall_imgt <- round(((nrow(comparison_Dcall_imgt) - nrow(comparison_Dcall_imgt_wo_space))) / 
+                                            nrow(comparison_Dcall_imgt) * 100)
+#45
+percent_unassigned_Jcall_imgt <- round(((nrow(comparison_Jcall_imgt) - nrow(comparison_Jcall_imgt_wo_space))) / 
+                                            nrow(comparison_Jcall_imgt) * 100)
+#26
+
+percent_unassigned_matrix <- matrix(c(percent_unassigned_Dcall_igblast, percent_unassigned_Dcall_imgt,
+                                      percent_unassigned_Jcall_igblast, percent_unassigned_Jcall_imgt), ncol = 2, byrow = TRUE)
+
+colnames(percent_unassigned_matrix) <- c("IgBlast", "IMGT")
+rownames(percent_unassigned_matrix) <- c("Dcall", "Jcall")
+
+percent_unassigned_table <- as.table(percent_unassigned_matrix)
+
+unassigned_plot <-  barplot(percent_unassigned_table, legend.text =T, beside = TRUE, ylim=c(0,100), col = c("green", "blue"), 
+        main = "Percentage unassigned D and J call") 
+#add text ontop of the bar plots 
+text(x = unassigned_plot, y = percent_unassigned_table, labels = percent_unassigned_table,  pos = 3,)
+
+
+
 
 
 
