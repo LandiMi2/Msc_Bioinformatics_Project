@@ -55,6 +55,9 @@ Realign your reads, but this time use `-OsaveOriginalReads=true`  this parameter
 
 `mixcr align -s bovine --library imgt.201948-5.sv3.0.12.json.gz -p rna-seq -OsaveOriginalReads=true --report trial_simulated.txt ../mixcr_simulated_data/Annotation_500,000_rep/simulated_reads1.fq ../mixcr_simulated_data/Annotation_500,000_rep/simulated_reads2.fq trial_simulated.vdjca`
 
+mixcr run for polarized repertoire 
+
+
 next export your alignment, for this case you are intrested with sequence ID, Vcall, Dcall and Jcall. In the export command `-descrsR1` flag is used. 
 
 ` mixcr exportAlignments -descrsR1 -vHit -dHit -jHit simulated_bovine.vdjca  simulated_alignments.txt `
