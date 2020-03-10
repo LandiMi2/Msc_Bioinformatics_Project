@@ -6,7 +6,14 @@
 
 **IgSimulator command**
 
+Run for diverse antibody repertoire
+
 ` ./ig_simulator.py --chain-type HC --num-bases 100000 --num-mutated 200000 --repertoire-size 500000 --vgenes ./data/bovine_ig_germline_genes/B_V.fasta --dgenes ./data/bovine_ig_germline_genes/IGHD.fasta --jgenes ./data/bovine_ig_germline_genes/IGHJ.fasta -o Bovine_IgSimulation_1 `
+
+Run for polarized antibody repertoire
+
+`./ig_simulator.py --chain-type HC --num-bases 20000 --num-mutated 100000 --repertoire-size 500000 --vgenes ./data/bovine_ig_germline_genes/B_V.fasta --dgenes ./data/bovine_ig_germline_genes/IGHD.fasta --jgenes ./data/bovine_ig_germline_genes/IGHJ.fasta -o Bovine_IgSimulation_Polarised`
+
 
 parameters
 * For diverse repertoire (naive Bcell) - what I used
