@@ -10,6 +10,8 @@ Polarized repertoire
 
 ` ./bin/igblastn -query ../merged_reads_polarised.fasta -germline_db_V ./bin/database/V.fasta -germline_db_D ./bin/database/D.fasta -germline_db_J ./bin/database/J.fasta -outfmt 19 -auxiliary_data ./optional_file/btau_gl.aux  -out ../simulated_igblast_polarized.tsv `
 
+IgBlast Version : 1.15.0
+
 **IgSimulator command**
 
 Run for diverse antibody repertoire
@@ -26,6 +28,9 @@ parameters
   num_base = 100000 ; num_mutation = 200000
 * For polarised repertoire (classed switched)
   num_base = 20000 ; num_mutation = 100000
+  
+IgSimulator Version : 
+ ART_Illumina Version : 2.1.8
 
 **Assembly before runing IgBlast or IMGT**
 
@@ -54,6 +59,8 @@ then convert the fastq assembled file to fasta for annotation
 Realign your reads, but this time use `-OsaveOriginalReads=true`  this parameter 
 
 `mixcr align -s bovine --library imgt.201948-5.sv3.0.12.json.gz -p rna-seq -OsaveOriginalReads=true --report trial_simulated.txt ../mixcr_simulated_data/Annotation_500,000_rep/simulated_reads1.fq ../mixcr_simulated_data/Annotation_500,000_rep/simulated_reads2.fq simulated_bovine.vdjca `
+
+MiXCR Version : 3.0.10
 
 mixcr run for polarized repertoire
 
