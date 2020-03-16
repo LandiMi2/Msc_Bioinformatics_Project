@@ -31,6 +31,11 @@ parameters
   
 IgSimulator Version : 
  ART_Illumina Version : 2.1.8
+ 
+IgSimulator command for modified germline J gene
+
+` ./ig_simulator.py --chain-type HC --num-bases 100000 --num-mutated 200000 --repertoire-size 500000 --vgenes ./data/bovine_ig_germline_genes/B_V.fasta --dgenes ./data/bovine_ig_germline_genes/IGHD.fasta --jgenes ./data/bovine_ig_germline_genes/IGHJ_Modified.fasta -o Bovine_IgSimulation_Modified_Jgene`
+
 
 **Assembly before runing IgBlast or IMGT**
 
