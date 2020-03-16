@@ -40,3 +40,5 @@ For IgBlast and IMGT annotation outputs, we could see some percentage of unassig
 
 
 ![unassigned](Rplot02.jpeg "Predicted unassigned genes")
+
+**Step 4 : Distribution of genes by the three annotation tools**
