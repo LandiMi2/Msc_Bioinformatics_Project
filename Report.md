@@ -2,7 +2,7 @@
 
 **Step 1: Simulation of bovine antibody repertoire**
 
-Igsimulator version 2.0 (Safonova, Lapidus, & Lill, n.d.) was used to simulate bovine antibody repertoires for benchmarking annotation tools since there is no gold standard dataset needed to validate these annotation tools. To get datasets of two different diversities for comparison. 
+Igsimulator version 2.0 (Safonova, Lapidus, & Lill, n.d.) was used to simulate bovine antibody repertoires for benchmarking annotation tools since there is no gold standard dataset needed to validate these annotation tools. To generate datasets of two different diversities for comparison. 
 We simulated both diverse/naive antibody repertoire(generating a high number of low abundant clusters of mutated sequences) and polarized/class-switched antibody repertoire(generating a high number of repetitive clusters). Parameters used to generate these
 repertoires, for diverse antibody repertoire the number of base antibody was set as 100000 and the number of mutated antibody 200000.
 For the class-switched antibody repertoire, the number of base antibody was set as 20000 and mutated antibody 100000 (Smakaj et al., 2019)⁠.
