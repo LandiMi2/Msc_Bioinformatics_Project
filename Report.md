@@ -32,5 +32,11 @@ Below are the two comparison steps.
 
 ![Comparison - Allele level](gene_level.png "Predicted accurary at gene level")
 
-Challenges for this step th
+**Challenges**
 
+The challenge for this step of comparison is that we do not have a unique denominator when calculating predicted accuracy and error rates. The denominator for Igblast and IMGT is the same but MiXCR is different. Annotation using MiXCR does not align 100% of the reads, it aligns 65% of the reads and this is because there is an overlap. This is the reason why we are seeing a difference in the denominator for MiXCR. Because this was a challenge for our analysis. We had to use a different denominator for MiXCR and because we were comparing hit and mishits, calculations were done based on whether there was a match or a mismatch for each antibody generated for MiXCR annotation. 
+33% of the misaligned reads are as a result of the absence of J hits. We used default parameters for analysis and the J test was set at 5. This works well for human data sets as they have more J genes compared to bovine that utilizes only 2 or 3 J genes. To optimize this tool for bovine annotation, this parameter needs to be adjusted to reach a 95%-100% alignment of reads. 
+For IgBlast and IMGT annotation outputs, we could see some percentage of unassigned D and J gene calls. The graph below shows the frequencies of unassigned genes. 
+
+
+![unassigned](Rplot02.jpeg "Predicted unassigned genes")
