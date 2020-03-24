@@ -40,7 +40,7 @@ For IgBlast and IMGT annotation outputs, we could see some percentage of unassig
 
 ![unassigned](Rplot02.jpeg "Predicted unassigned genes")
 
-**Overcoming  the denominator challenge**
+**Why MiXCR aligns 65%**
 
 MiXCR aligns D genes only after V/J junction position is determined, and hence if there is no J gene, MiXCR can't produce successful alignment here. This is because the sequence has no complete CDR3 sequences and MiXCR tends to drop the sequences. For this reason, we see a 35% unaligned sequence reads. 
 To get all reads aligned, this parameter of MiXCR needs to be overidden. We add  `-OallowPartialAlignments=true - OallowNoCDR3PartAlignments=true` this parameter to align command and we get a 98% alignment. Unfortunately, now we see unassigned D & J gene calls in MiXCR. MiXCR will not only call V genes at this point and not the D gene and J gene.  The alignment of the D gene is detrimental to assigning J genes. Deep understanding is needed to try to validate whether MiXCR can assign J gene without D gene call.  
@@ -49,7 +49,15 @@ After adjustment of MiXCR we get below graphs of comparison;
 
 (upload hit, mishit and unassigned barplots)
 
-**Step 4 : Distribution of genes by the three annotation tools**
+**Modifying reference germline J gene**
+
+Bovine utilizes only two J gene, IGHJ1-6, and IGHJ2-4. We went ahead and modified reference germline J genes to have only these two genes and simulated a diverse antibody repertoire. Although, bovine J gene usage is not 50-50%. We went ahead with the comparison analysis. Still, IgSimulator can be tricked to have different proportions of the J gene as IGHV2-4 is utilized more than IGHJ1-6.  
+
+Comparison analysis showed MiXCR to have a 100% predicted accuracy for J gene calls from 85%. Igblast and IMGT had a 9% increase in predicted accuracy for J genes call. Interestingly, IgBlast had reduced unassigned D and J gene calls. Reduced unassigned J gene of 4% from 27%. IMGT had the same percentages for unassigned D and J gene calls.
+
+(Upload graphs)
+
+**Step 4 : Distribution of genes by the three annotation tools using modified germline J gene**
 
 IgBlast and IMGT have a close V gene distribution to the true V gene compared to MiXCR. MiXCR, however, has a close J gene distribution compared to IgBlast and IMGT. Across all tools, there was no close D gene distribution. 
 
