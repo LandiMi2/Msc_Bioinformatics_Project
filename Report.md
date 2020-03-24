@@ -40,6 +40,14 @@ For IgBlast and IMGT annotation outputs, we could see some percentage of unassig
 
 ![unassigned](Rplot02.jpeg "Predicted unassigned genes")
 
+**Modifying reference germline J gene**
+
+Bovine utilizes only two J gene, IGHJ1-6, and IGHJ2-4. We went ahead and modified reference germline J genes to have only these two genes and simulated a diverse antibody repertoire. Although, bovine J gene usage is not 50-50%. We went ahead with the comparison analysis. Still, IgSimulator can be tricked to have different proportions of the J gene as IGHV2-4 is utilized more than IGHJ1-6.  
+
+Comparison analysis showed MiXCR to have a 100% predicted accuracy for J gene calls from 85%. Igblast and IMGT had a 9% increase in predicted accuracy for J genes call. Interestingly, IgBlast had reduced unassigned D and J gene calls. Reduced unassigned J gene of 4% from 27%. IMGT had the same percentages for unassigned D and J gene calls.
+
+(Upload graphs)
+
 **Why MiXCR aligns 65%**
 
 MiXCR aligns D genes only after V/J junction position is determined, and hence if there is no J gene, MiXCR can't produce successful alignment here. This is because the sequence has no complete CDR3 sequences and MiXCR tends to drop the sequences. For this reason, we see a 35% unaligned sequence reads. 
@@ -49,13 +57,11 @@ After adjustment of MiXCR we get below graphs of comparison;
 
 (upload hit, mishit and unassigned barplots)
 
-**Modifying reference germline J gene**
+After adding the above-mentioned parameters on the MiXCR alignment step and now we have full alignment. We went ahead and did another comparison to justify why we were getting 35% discarded sequences on default MiXCR align command.  We see a reduced J gene call predicted percentage for MiXCR (Fig7) and this is as a result of unassigned J and D gene calls for MiXCR after adding the parameter (Fig8).  No change of V gene predicated accuracy. 
 
-Bovine utilizes only two J gene, IGHJ1-6, and IGHJ2-4. We went ahead and modified reference germline J genes to have only these two genes and simulated a diverse antibody repertoire. Although, bovine J gene usage is not 50-50%. We went ahead with the comparison analysis. Still, IgSimulator can be tricked to have different proportions of the J gene as IGHV2-4 is utilized more than IGHJ1-6.  
+(upload graphs)
 
-Comparison analysis showed MiXCR to have a 100% predicted accuracy for J gene calls from 85%. Igblast and IMGT had a 9% increase in predicted accuracy for J genes call. Interestingly, IgBlast had reduced unassigned D and J gene calls. Reduced unassigned J gene of 4% from 27%. IMGT had the same percentages for unassigned D and J gene calls.
 
-(Upload graphs)
 
 **Step 4 : Distribution of genes by the three annotation tools using modified germline J gene**
 
