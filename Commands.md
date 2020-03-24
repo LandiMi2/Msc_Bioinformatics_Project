@@ -29,25 +29,13 @@ parameters
 * For polarised repertoire (classed switched)
   num_base = 20000 ; num_mutation = 100000
   
-IgSimulator Version : 
+IgSimulator Version : 2.0
  ART_Illumina Version : 2.1.8
  
 IgSimulator command for modified germline J gene
 
 ` ./ig_simulator.py --chain-type HC --num-bases 100000 --num-mutated 200000 --repertoire-size 500000 --vgenes ./data/bovine_ig_germline_genes/B_V.fasta --dgenes ./data/bovine_ig_germline_genes/IGHD.fasta --jgenes ./data/bovine_ig_germline_genes/IGHJ_Modified.fasta -o Bovine_IgSimulation_Modified_Jgene`
 
-
-**Assembly before runing IgBlast or IMGT**
-
-mofidy the header of the simulated reads using awk 
-
-`awk '{print (NR%4 == 1) ? "@antibody" ++i : $0}' simulated_reads2.fq > simulated_changed_header_R2.fq`
-
-**run asembly.py**
-
-` AssemblePairs.py align -2 ./Data/simulated_changed_header_R2.fq -1 ./Data/simulated_changed_header_R1.fq --fasta --nproc 4 --coord illumina`
-
-validate this command
 
 **NB you can assemble the reads independently using pear**
 
@@ -75,6 +63,11 @@ mixcr run for polarized repertoire
 next export your alignment, for this case you are intrested with sequence ID, Vcall, Dcall and Jcall. In the export command `-descrsR1` flag is used. 
 
 ` mixcr exportAlignments -descrsR1 -vHit -dHit -jHit simulated_bovine.vdjca  simulated_alignments.txt `
+
+**To get a full alignment for MiXCR annotation**
+
+Add `-OallowPartialAlignments=true  -OallowNoCDR3PartAlignments=true` to the align command...this gives you a 98% alignment. 
+
 
 You good to go....:smile:!!
 
