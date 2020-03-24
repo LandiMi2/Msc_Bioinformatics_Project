@@ -20,7 +20,7 @@ NB: _commands for IgBlast and IgBlast are provided in the `command.md` file. Sna
 
 **Step 3 : Comparison of annotation outputs**
 
-Analysis at this step was done using R program version 3.6.2 and the script is provided in this repository. This was done both at the allelic level and gene level. To be fair to MiXCR annotation, analysis done at the gene level and was considered compariable because MiXCR does annotation at gene level as compared to IgBlast and IMGT that identifies V, D and J genes and alleles by alignment with the germline receptor genes and alleles sequences of germline database provided. We could see a lot of improvement in the accuracy of MiXCR at gene level as compared to the allele level comparison.  At allele level, MiXCR annotates the V gene with a predicted accuracy of 43% whereas at the gene level it had a predicted accuracy of 87% for the same gene. IgBlast and MiXCR had a slight increase of from 90% to 96% predicted accuracy. Overall for the V gene, MiXCR had a slightly higher number of predicted mishit of 13% compared to IgBlast and IMGT which had a 4% predicted error rate for V gene calls. IMGT had the highest percentage of mishit of 69% for the D gene and this was as a result of 45% unassigned D gene calls. MiXCR had the lowest percentage of J gene call error rate of 15% compared to Igblast 40% and IMGT 43% error rates(diverse antobody repertoire). This analysis was comparable to polarized antibody repertoire and we could see relatively similar predicted percentages of hits and mishits.  
+Analysis at this step was done using R program version 3.6.2 and the script is provided in this repository. This was done both at the allelic level and gene level. To be fair to MiXCR annotation, analysis done at the gene level and was considered compariable because MiXCR does annotation at gene level as compared to IgBlast and IMGT that identifies V, D and J genes and alleles by alignment with the germline receptor genes and alleles sequences of germline database provided. We could see a lot of improvement in the accuracy of MiXCR at gene level as compared to the allele level comparison.  At allele level, MiXCR annotates the V alleles with a predicted accuracy of 43% whereas at the gene level it had a predicted accuracy of 87%. IgBlast and MiXCR had a slight increase of from 90% to 96% predicted accuracy. Overall for the V gene, MiXCR had a slightly higher number of predicted mishit of 13% compared to IgBlast and IMGT which had a 4% predicted error rate for V gene calls. IMGT had the highest percentage of mishit of 69% for the D gene and this was as a result of 45% unassigned D gene calls. MiXCR had the lowest percentage of J gene call error rate of 15% compared to Igblast 40% and IMGT 43% error rates(diverse antobody repertoire). This analysis was comparable to polarized antibody repertoire and we could see relatively similar predicted percentages of hits and mishits.  
 
 Below are the two comparison steps. 
 
@@ -34,11 +34,19 @@ Below are the two comparison steps.
 
 **Challenges**
 
-The challenge for this step of comparison is that we do not have a unique denominator when calculating predicted accuracy and error rates. The denominator for Igblast and IMGT is the same but MiXCR is different. Annotation using MiXCR does not align 100% of the reads, it aligns 65% of the reads and this is because there is an overlap. This is the reason why we are seeing a difference in the denominator for MiXCR. Because this was a challenge for our analysis. We had to use a different denominator for MiXCR and because we were comparing hit and mishits, calculations were done based on whether there was a match or a mismatch for each antibody generated for MiXCR annotation.
-33% of the misaligned reads are as a result of the absence of J hits. We used default parameters for analysis and the J test was set at 5. This works well for human data sets as they have more J genes compared to bovine that utilizes only 2 or 3 J genes. To optimize this tool for bovine annotation, this parameter needs to be adjusted to reach a 95%-100% alignment of reads. 
+The challenge for this step of comparison is that we do not have a unique denominator when calculating predicted accuracy and error rates. The denominator for Igblast and IMGT is the same but MiXCR is different. Annotation using MiXCR does not align 100% of the reads, it aligns 65% of the reads and this is because there is an overlap. This is the reason why we are seeing a difference in the denominator for MiXCR. Because this was a challenge for our analysis. We had to use a different denominator for MiXCR and because we were comparing hit and mishits, calculations were done based on whether there was a match or a mismatch for each antibody generated for MiXCR annotation. 33% of the misaligned reads are as a result of the absence of J hits.
 For IgBlast and IMGT annotation outputs, we could see some percentage of unassigned D and J gene calls. The graph below shows the frequencies of unassigned genes. Q: Why is this happening ? 
 
 
 ![unassigned](Rplot02.jpeg "Predicted unassigned genes")
+
+**Overcoming  the denominator challenge**
+
+MiXCR aligns D genes only after V/J junction position is determined, and hence if there is no J gene, MiXCR can't produce successful alignment here. This is because the sequence has no complete CDR3 sequences and MiXCR tends to drop the sequences. For this reason, we see a 35% unaligned sequence reads. 
+To get all reads aligned, this parameter of MiXCR needs to be overidden. We add  `-OallowPartialAlignments=true - OallowNoCDR3PartAlignments=true` this parameter to align command and we get a 98% alignment. Unfortunately, now we see unassigned D & J gene calls in MiXCR. MiXCR will not only call V genes at this point and not the D gene and J gene.  The alignment of the D gene is detrimental to assigning J genes. Deep understanding is needed to try to validate whether MiXCR can assign J gene without D gene call.  
+
+After adjustment of MiXCR we get below graphs of comparison; 
+
+(upload hit, mishit and unassigned barplots)
 
 **Step 4 : Distribution of genes by the three annotation tools**
