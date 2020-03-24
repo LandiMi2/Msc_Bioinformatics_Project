@@ -50,3 +50,7 @@ After adjustment of MiXCR we get below graphs of comparison;
 (upload hit, mishit and unassigned barplots)
 
 **Step 4 : Distribution of genes by the three annotation tools**
+
+IgBlast and IMGT have a close V gene distribution to the true V gene compared to MiXCR. MiXCR, however, has a close J gene distribution compared to IgBlast and IMGT. Across all tools, there was no close D gene distribution. 
+
+(Upload barplots)
