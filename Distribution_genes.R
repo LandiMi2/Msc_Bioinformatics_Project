@@ -1,9 +1,10 @@
 setwd("/home/cofia/Documents/Msc_Bioinformatics_Project/Data/Annotatio_Output")
 #open igblast annotation of diverse antibodty
-igblast <- read.delim("./Igblast/simulated_igblast_diverse.tsv", header = TRUE, stringsAsFactors = FALSE, sep = "\t")
+igblast <- read.delim("./IgBlast/Boran_IgBlast_annotation.tsv", header = TRUE, stringsAsFactors = FALSE, sep = "\t")
 #######################################################################################################
 #extract the V call column and remove the last three characters that define the alleles 
 igblast_Vgenes <- data.frame(igblast$v_call)
+
 #consider the first allele called 
 igblast_Vgenes$igblast.v_call <- gsub("^(.*?),.*", "\\1", igblast_Vgenes$igblast.v_call)
 #make a gene column tables 
@@ -16,14 +17,18 @@ igblast_Vgenes_counts <- as.data.frame(table(igblast_Vgenes))
 View(igblast_Vgenes_counts)
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 igblast_Vgenes_counts$Percent <- round((igblast_Vgenes_counts$Freq / sum(igblast_Vgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
-#modify labels
 lbls_percent_V <- paste(igblast_Vgenes_counts$Percent,"%", sep="") 
-lbls_V <- paste(igblast_Vgenes_counts$igblast_Vgenes,lbls_percent_V,sep="  ") 
-pie(igblast_Vgenes_counts$Percent, labels = lbls_V,
-    col = brewer.pal(length(igblast_Vgenes_counts$igblast_Vgenes), "Paired"), main = "Igblast Vgene distribution")
+#lbls_V <- paste(igblast_Vgenes_counts$igblast_Vgenes,lbls_percent_V,sep="  ") 
 
+#create a bar plot for the distribution 
+library(ggplot2)
+ggplot(igblast_Vgenes_counts, aes(x = igblast_Vgenes_counts$igblast_Vgenes, 
+                                  y = igblast_Vgenes_counts$Percent)) +
+  geom_bar(stat = "identity", fill="red") + coord_flip() + geom_text(aes(label=lbls_percent_V))+
+  labs(title = "Boran bovine breed IgBlast Annotation - V gene distribution", x = "V Gene calls", 
+       y = "Percentage distribution") + ylim(0,30)
+  
+  
 ##############################################################################################
 #extract the D call column and remove the last three characters that define the alleles 
 igblast_Dgenes <- data.frame(igblast$d_call)
@@ -39,15 +44,8 @@ igblast_Dgenes_counts <- as.data.frame(table(igblast_Dgenes))
 View(igblast_Dgenes_counts)
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 igblast_Dgenes_counts$Percent <- round((igblast_Dgenes_counts$Freq / sum(igblast_Dgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
-#modify labels
-lbls_percent_D <- paste(igblast_Dgenes_counts$Percent,"%", sep="") 
-lbls_D <- paste(igblast_Dgenes_counts$igblast_Dgenes,lbls_percent_D,sep="  ") 
 
-pie(igblast_Dgenes_counts$Percent, labels = lbls_D,
-    col = brewer.pal(length(igblast_Dgenes_counts$igblast_Dgenes), "Paired"), main = "Igblast Dgene distribution")
-
+#Not intrested in D gene distribution
 
 ##############################################################################################
 #extract the J call column and remove the last three characters that define the alleles 
@@ -64,18 +62,18 @@ igblast_Jgenes_counts <- as.data.frame(table(igblast_Jgenes))
 View(igblast_Jgenes_counts)
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 igblast_Jgenes_counts$Percent <- round((igblast_Jgenes_counts$Freq / sum(igblast_Jgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
 #modify labels
 lbls_percent_J <- paste(igblast_Jgenes_counts$Percent,"%", sep="") 
-lbls_J <- paste(igblast_Jgenes_counts$igblast_Jgenes,lbls_percent_J,sep="  ") 
-
-pie(igblast_Jgenes_counts$Percent, labels = lbls_J,
-    col = brewer.pal(length(igblast_Jgenes_counts$igblast_Jgenes), "Paired"), main = "Igblast Jgene distribution")
+#bar plot 
+ggplot(igblast_Jgenes_counts, aes(x = igblast_Jgenes_counts$igblast_Jgenes, 
+                                  y = igblast_Jgenes_counts$Percent)) +
+  geom_bar(stat = "identity", fill="blue") + coord_flip() + geom_text(aes(label=lbls_percent_J))+
+  labs(title = "Boran bovine breed IgBlast Annotation - J gene distribution", x = "J Gene calls", 
+       y = "Percentage distribution") + ylim(0,100)
 
 ############################## mixcr distribution ###################################################
 #open mixcr annotation of diverse antibodty
-mixcr <- read.delim("./MIXCR/Simulated_data/diverse_simulated_alignments.txt", header = TRUE, stringsAsFactors = FALSE, sep = "\t")
+mixcr <- read.delim("./MiXCR/Boran-IgM-Fr1-Fr4_clones_specified.txt", header = TRUE, stringsAsFactors = FALSE, sep = "\t")
 #######################################################################################################
 #extract the V call column and remove the last three characters that define the alleles 
 mixcr_Vgenes <- data.frame(mixcr$bestVHit)
@@ -90,14 +88,14 @@ mixcr_Vgenes_counts <- as.data.frame(table(mixcr_Vgenes))
 
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 mixcr_Vgenes_counts$Percent <- round((mixcr_Vgenes_counts$Freq / sum(mixcr_Vgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
 #modify labels
 lbls_percent_mixcr_V <- paste(mixcr_Vgenes_counts$Percent,"%", sep="") 
-lbls_mixcr_V <- paste(mixcr_Vgenes_counts$mixcr_Vgenes,lbls_percent_mixcr_V,sep="  ") 
-pie(mixcr_Vgenes_counts$Percent, labels = lbls_mixcr_V,
-    col = brewer.pal(length(mixcr_Vgenes_counts$mixcr_Vgenes), "Paired"), main = "MiXCR Vgene distribution")
 
+ggplot(mixcr_Vgenes_counts, aes(x = mixcr_Vgenes_counts$mixcr_Vgenes, 
+                                  y = mixcr_Vgenes_counts$Percent)) +
+  geom_bar(stat = "identity", fill="red") + coord_flip() + geom_text(aes(label=lbls_percent_mixcr_V))+
+  labs(title = "Boran bovine breed MiXCR Annotation - V gene distribution", x = "V Gene calls", 
+       y = "Percentage distribution") + ylim(0,30)
 ##############################################################################################
 #extract the D call column and remove the last three characters that define the alleles 
 mixcr_Dgenes <- data.frame(mixcr$bestDHit)
@@ -112,13 +110,6 @@ mixcr_Dgenes_counts <- as.data.frame(table(mixcr_Dgenes))
 
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 mixcr_Dgenes_counts$Percent <- round((mixcr_Dgenes_counts$Freq / sum(mixcr_Dgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
-#modify labels
-lbls_percent_mixcr_D<- paste(mixcr_Dgenes_counts$Percent,"%", sep="") 
-lbls_mixcr_D <- paste(mixcr_Dgenes_counts$mixcr_Dgenes,lbls_percent_mixcr_D,sep="  ") 
-pie(mixcr_Dgenes_counts$Percent, labels = lbls_mixcr_D,
-    col = brewer.pal(length(mixcr_Dgenes_counts$mixcr_Dgenes), "Paired"), main = "MiXCR Dgene distribution")
 
 #################################################################################################
 #extract the J call column and remove the last three characters that define the alleles 
@@ -134,18 +125,18 @@ mixcr_Jgenes_counts <- as.data.frame(table(mixcr_Jgenes))
 
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 mixcr_Jgenes_counts$Percent <- round((mixcr_Jgenes_counts$Freq / sum(mixcr_Jgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
 #modify labels
 lbls_percent_mixcr_J <- paste(mixcr_Jgenes_counts$Percent,"%", sep="") 
-lbls_mixcr_J <- paste(mixcr_Jgenes_counts$mixcr_Jgenes,lbls_percent_mixcr_J,sep="  ") 
-pie(mixcr_Jgenes_counts$Percent, labels = lbls_mixcr_J,
-    col = brewer.pal(length(mixcr_Jgenes_counts$mixcr_Jgenes), "Paired"), main = "MiXCR J gene distribution")
-
+#barplot
+ggplot(mixcr_Jgenes_counts, aes(x = mixcr_Jgenes_counts$mixcr_Jgenes, 
+                                y = mixcr_Jgenes_counts$Percent)) +
+  geom_bar(stat = "identity", fill="blue") + coord_flip() + geom_text(aes(label=lbls_percent_mixcr_J))+
+  labs(title = "Boran bovine breed MiXCR Annotation - J gene distribution", x = "J Gene calls", 
+       y = "Percentage distribution") + ylim(0,100)
 
 ############################## IMGT distribution ###################################################
 #open mixcr annotation of diverse antibodty
-imgt <- read.delim("./IMGT/Bovine_Simulated_Annotation_diverse/4_IMGT-gapped-AA-sequences.txt", header = TRUE, stringsAsFactors = FALSE, sep = "\t")
+imgt <- read.delim("./IMGT/4_IMGT-gapped-AA-sequences_Boran.txt", header = TRUE, stringsAsFactors = FALSE, sep = "\t")
 #######################################################################################################
 #extract the V call column and remove the last three characters that define the alleles 
 imgt_Vgenes <- data.frame(imgt$V.GENE.and.allele)
@@ -163,19 +154,20 @@ imgt_Vgenes_counts <- as.data.frame(table(imgt_Vgenes))
 
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 imgt_Vgenes_counts$Percent <- round((imgt_Vgenes_counts$Freq / sum(imgt_Vgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
+
 #modify labels
 lbls_percent_imgt_V <- paste(imgt_Vgenes_counts$Percent,"%", sep="") 
-lbls_imgt_V <- paste(imgt_Vgenes_counts$imgt_Vgenes,lbls_percent_imgt_V,sep="  ") 
-pie(imgt_Vgenes_counts$Percent, labels = lbls_imgt_V,
-    col = brewer.pal(length(imgt_Vgenes_counts$imgt_Vgenes), "Paired"), main = "IMGT Vgene distribution")
-
+#bar plot
+ggplot(imgt_Vgenes_counts, aes(x = imgt_Vgenes_counts$imgt_Vgenes, 
+                                y = imgt_Vgenes_counts$Percent)) +
+  geom_bar(stat = "identity", fill="red") + coord_flip() + geom_text(aes(label=lbls_percent_imgt_V))+
+  labs(title = "Boran bovine breed IMGT Annotation - V gene distribution", x = "V Gene calls", 
+       y = "Percentage distribution") + ylim(0,30)
 ###################################################################################################
 
 #extract the D call column and remove the last three characters that define the alleles 
 imgt_Dgenes <- data.frame(imgt$D.GENE.and.allele)
-View(imgt_Dgenes)
+#View(imgt_Dgenes)
 imgt_Dgenes$imgt.D.GENE.and.allele <-  gsub("Bostau ", "", imgt_Dgenes$imgt.D.GENE.and.allele)
 #consider the first gene in the column 
 imgt_Dgenes$imgt.D.GENE.and.allele <-  gsub("^(.*?),.*", "\\1", imgt_Dgenes$imgt.D.GENE.and.allele)
@@ -191,19 +183,12 @@ imgt_Dgenes_counts <- as.data.frame(table(imgt_Dgenes))
 
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 imgt_Dgenes_counts$Percent <- round((imgt_Dgenes_counts$Freq / sum(imgt_Dgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
-#modify labels
-lbls_percent_imgt_D <- paste(imgt_Dgenes_counts$Percent,"%", sep="") 
-lbls_imgt_D <- paste(imgt_Dgenes_counts$imgt_Dgenes,lbls_percent_imgt_D,sep="  ") 
-pie(imgt_Dgenes_counts$Percent, labels = lbls_imgt_D,
-    col = brewer.pal(length(imgt_Dgenes_counts$imgt_Dgenes), "Paired"), main = "IMGT Dgene distribution")
 
 
 ####################################################################################################
 #extract the V call column and remove the last three characters that define the alleles 
 imgt_Jgenes <- data.frame(imgt$J.GENE.and.allele)
-View(imgt_Jgenes)
+head(imgt_Jgenes)
 imgt_Jgenes$imgt.J.GENE.and.allele <-  gsub("Bostau ", "", imgt_Jgenes$imgt.J.GENE.and.allele)
 #consider the first gene in the column 
 imgt_Jgenes$imgt.J.GENE.and.allele <-  gsub("^(.*?),.*", "\\1", imgt_Jgenes$imgt.J.GENE.and.allele)
@@ -219,14 +204,12 @@ imgt_Jgenes_counts <- as.data.frame(table(imgt_Jgenes))
 
 #convert the frequencies in percentages to make a frequencies barplot and a piechart 
 imgt_Jgenes_counts$Percent <- round((imgt_Jgenes_counts$Freq / sum(imgt_Jgenes_counts$Freq)) * 100)
-#create a pie chart
-require(RColorBrewer) #color options for the pie chart
+
 #modify labels
 lbls_percent_imgt_J <- paste(imgt_Jgenes_counts$Percent,"%", sep="") 
-lbls_imgt_J <- paste(imgt_Jgenes_counts$imgt_Jgenes,lbls_percent_imgt_J,sep="  ") 
-pie(imgt_Jgenes_counts$Percent, labels = lbls_imgt_J,
-    col = brewer.pal(length(imgt_Jgenes_counts$imgt_Jgenes), "Paired"), main = "IMGT Jgene distribution")
 
-
-mixcr_Dgenes_counts
-imgt_Dgenes_counts
+ggplot(imgt_Jgenes_counts, aes(x = imgt_Jgenes_counts$imgt_Jgenes, 
+                               y = imgt_Jgenes_counts$Percent)) +
+  geom_bar(stat = "identity", fill="blue") + coord_flip() + geom_text(aes(label=lbls_percent_imgt_J))+
+  labs(title = "Boran bovine breed IMGT Annotation - J gene distribution", x = "J Gene calls", 
+       y = "Percentage distribution") + ylim(0,100)
