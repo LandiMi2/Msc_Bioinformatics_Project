@@ -606,4 +606,191 @@ unassigned_plot <-  barplot(percent_unassigned_table, legend.text =T, beside = T
 #add text ontop of the bar plots 
 text(x = unassigned_plot, y = percent_unassigned_table, labels = percent_unassigned_table,  pos = 3,)
 
+############################# Creating confusion matrixs ############################################
+data_Igblast_Vgene <- data.frame(comparison_Vcall_Igblast$IgBlast_Vcall,comparison_Vcall_Igblast$True_Vcall,
+                                 comparison_Vcall_Igblast$HIT)
+#columnames
+colnames(data_Igblast_Vgene) <- c("IgBlast_Vcall", "True_Vcall", "HIT")
+View(data_Igblast_Vgene)
+#add IGHV1-33 as a level in IgBlast Vcall
+#below is not my function....
+addLevel <- function(x, newlevel=NULL) {
+  if(is.factor(x)) {
+    if (is.na(match(newlevel, levels(x))))
+      return(factor(x, levels=c(levels(x), newlevel)))
+  }
+  return(x)
+}
+data_Igblast_Vgene$IgBlast_Vcall <- addLevel(data_Igblast_Vgene$IgBlast_Vcall, "IGHV1-33")
+str(data_Igblast_Vgene$IgBlast_Vcall)
+
+
+data_mixcr_Vgene <- data.frame(compare_mixcr_Vcall$mixcr.Vcall, compare_mixcr_Vcall$read_vdj_mixcr.V_call,
+                               compare_mixcr_Vcall$HIT)
+colnames(data_mixcr_Vgene) <- c("MiXCR_Vcall","True_Vcall", "HIT")
+
+data_mixcr_Vgene$MiXCR_Vcall <- addLevel(data_mixcr_Vgene$MiXCR_Vcall, "IGHV1S1")
+data_mixcr_Vgene$MiXCR_Vcall <- addLevel(data_mixcr_Vgene$MiXCR_Vcall, "IGHV1S1")
+
+
+data_imgt_Vgene <- data.frame(comparison_Vcall_imgt$IMGT_Vcall, comparison_Vcall_imgt$True_Vcall,
+                              comparison_Vcall_imgt$HIT)
+colnames(data_imgt_Vgene) <- c("IMGT_Vcall","True_Vcall", "HIT")
+#to remove 466 empty rows from this datafram IMGT
+data_imgt_Vgene <- data_imgt_Vgene[-which(data_imgt_Vgene$IMGT_Vcall == ""), ]
+sum(data_imgt_Vgene$IMGT_Vcall == "") #confirm 
+#### draw a hit map for V gene calls #############################
+#construct a table for comaparison for Igblast V gene 
+Igblast_Vgene_CrossTable <- data.frame(table(data_Igblast_Vgene$IgBlast_Vcall, data_Igblast_Vgene$True_Vcall))
+#change column names 
+colnames(Igblast_Vgene_CrossTable) <- c("Igblast_Vcall", "True_Vcall", "Counts")
+View(Igblast_Vgene_CrossTable)
+
+#log transform
+Igblast_Vgene_CrossTable$Counts <- log(Igblast_Vgene_CrossTable$Counts)
+library(ggplot2)
+library(gridExtra)
+
+heatmap_Vgene_Igblast <- ggplot(Igblast_Vgene_CrossTable, aes(Igblast_Vcall, True_Vcall)) +
+  geom_tile(aes(fill = Counts), colour = "black") +
+  scale_fill_gradient(low = "blue", high = "red", name = "log(Counts)") + 
+  ggtitle("Frequency of hits and mishits of IgBlast V gene annotation") +
+  xlab("IgBlast V calls") + ylab("True V calls")
+
+#construct a table for comaparison for IMGT V gene 
+imgt_Vgene_CrossTable <- data.frame(table(data_imgt_Vgene$IMGT_Vcall, data_imgt_Vgene$True_Vcall))
+#change column names 
+colnames(imgt_Vgene_CrossTable) <- c("IMGT_Vcall", "True_Vcall", "Counts")
+#log transformation
+imgt_Vgene_CrossTable$Counts <- log(imgt_Vgene_CrossTable$Counts)
+#remove empty rows 
+imgt_Vgene_CrossTable <- imgt_Vgene_CrossTable[-which(imgt_Vgene_CrossTable$IMGT_Vcall == ""), ]
+
+heatmap_Vgene_imgt <- ggplot(imgt_Vgene_CrossTable, aes(IMGT_Vcall, True_Vcall)) +
+  geom_tile(aes(fill = Counts), colour = "black") +
+  scale_fill_gradient(low = "blue", high = "red", name = "log(Counts)") +
+  ggtitle("Frequency of hits and mishits of IMGT V gene annotation") +
+  xlab("IMGT V calls") + ylab("True V calls")
+
+#construct a table for comaparison for MiXCR V gene 
+mixcr_Vgene_CrossTable <- data.frame(table(data_mixcr_Vgene$MiXCR_Vcall, data_mixcr_Vgene$True_Vcall))
+
+#change column names 
+colnames(mixcr_Vgene_CrossTable) <- c("MiXCR_Vcall", "True_Vcall", "Counts")
+
+#log transformation
+mixcr_Vgene_CrossTable$Counts <- log(mixcr_Vgene_CrossTable$Counts)
+#View(mixcr_Vgene_CrossTable)
+
+heatmap_Vgene_mixcr <- ggplot(mixcr_Vgene_CrossTable, aes(MiXCR_Vcall, True_Vcall)) +
+  geom_tile(aes(fill = Counts), colour = "black") +
+  scale_fill_gradient(low = "blue", high = "red", name = "log(Counts)") +
+  ggtitle("Frequency of hits and mishits of MiXCR V gene annotation") +
+  ylab("True V calls") + xlab("MiXCR V calls")
+
+##### combine the three heat maps ################
+heat_list <- list(heatmap_Vgene_Igblast, heatmap_Vgene_imgt, heatmap_Vgene_mixcr)
+heat_list[["ncol"]] <- 1
+do.call(grid.arrange, heat_list)
+
+
+###################################### J gene analysis ########################################
+
+data_Igblast_Jgene <- data.frame(comparison_Jcall_Igblast$IgBlast_Jcall,comparison_Jcall_Igblast$True_Jcall)
+#columnames
+colnames(data_Igblast_Jgene) <- c("IgBlast_Jcall", "True_Jcall")
+#remove blank spaces 
+data_Igblast_Jgene <- data_Igblast_Jgene [-which(data_Igblast_Jgene$IgBlast_Jcall == ""), ]
+
+str(data_Igblast_Jgene)
+# True column has only 2 levels ....add more 9 levels to fit a square matrix
+#create a list of missing levels 
+addlist_Jgene <- list("IGHJ1-1", "IGHJ1-2", "IGHJ1-3", "IGHJ1-4", "IGHJ1-5", "IGHJ2-3",
+                      "IGHJ2-5", "IGHJ2-6")
+#do a for loop to add the genes not present
+for (a in addlist_Jgene){
+  data_Igblast_Jgene$True_Jcall <- addLevel(data_Igblast_Jgene$True_Jcall, a)
+}
+
+#construct a table for comaparison for Igblast J gene 
+Igblast_Jgene_CrossTable <- data.frame(table(data_Igblast_Jgene$IgBlast_Jcall, data_Igblast_Jgene$True_Jcall))
+#change column names 
+colnames(Igblast_Jgene_CrossTable) <- c("Igblast_Jcall", "True_Jcall", "Counts")
+#remove the two emtpy spaces
+Igblast_Jgene_CrossTable <- Igblast_Jgene_CrossTable[-which(Igblast_Jgene_CrossTable$Igblast_Jcall== ""),]
+
+#log transform
+Igblast_Jgene_CrossTable$Counts <- log(Igblast_Jgene_CrossTable$Counts)
+head(Igblast_Jgene_CrossTable)
+
+heatmap_Jgene_Igblast <- ggplot(Igblast_Jgene_CrossTable, aes(Igblast_Jcall, True_Jcall)) +
+  geom_tile(aes(fill = Counts), colour = "black") +
+  scale_fill_gradient(low = "blue", high = "red", name = "log(Counts)") + 
+  ggtitle("Frequency of hits and mishits of IgBlast J gene annotation") +
+  ylab("True J calls") + xlab("IgBlast J calls")
+
+
+#################### mixcr J gene analysis ############################
+data_mixcr_Jgene <- data.frame(compare_mixcr_Jcall$mixcr.Jcall, compare_mixcr_Jcall$read_vdj_mixcr.J_call)
+colnames(data_mixcr_Jgene) <- c("MiXCR_Jcall","True_Jcall")
+str(data_mixcr_Jgene)
+addlistmixc_Jgene <- list("IGHJ2-6", "IGHJ1-5")
+#add the two genes 
+for (a in addlistmixc_Jgene){
+  data_mixcr_Jgene$True_Jcall <- addLevel(data_mixcr_Jgene$True_Jcall, a)
+}
+
+#construct a table for comaparison for MiXCCR J gene 
+mixcr_Jgene_CrossTable <- data.frame(table(data_mixcr_Jgene$MiXCR_Jcall, data_mixcr_Jgene$True_Jcall))
+#change column names 
+colnames(mixcr_Jgene_CrossTable) <- c("MiXCR_Jcall", "True_Jcall", "Counts")
+#log transformation
+mixcr_Jgene_CrossTable$Counts <- log(mixcr_Jgene_CrossTable$Counts)
+
+heatmap_Jgene_mixcr <- ggplot(mixcr_Jgene_CrossTable, aes(True_Jcall,MiXCR_Jcall)) +
+  geom_tile(aes(fill = Counts), colour = "black") +
+  scale_fill_gradient(low = "blue", high = "red", name = "log(Counts)") + 
+  ggtitle("Frequency of hits and mishits of MiXCR J gene annotation") +
+  xlab("True J calls") + ylab("MiXCR J calls")
+
+
+########################## imgt J gene coss tables ##################
+data_imgt_Jgene <- data.frame(comparison_Jcall_imgt$IMGT_Jcall, comparison_Jcall_imgt$True_Jcall)
+colnames(data_imgt_Jgene) <- c("IMGT_Jcall","True_Jcall")
+#remove empty spaces 
+data_imgt_Jgene <- data_imgt_Jgene[-which(data_imgt_Jgene$IMGT_Jcall == ""), ]
+data_imgt_Jgene <- data_imgt_Jgene[-which(data_imgt_Jgene$IMGT_Jcall == "less than 6 nucleotides are alig"), ]
+
+unique(data_imgt_Jgene$IMGT_Jcall)
+
+#create a list of missing levels 
+addlist_Jgene_imgt <- list("IGHJ1-1", "IGHJ1-2", "IGHJ1-3", "IGHJ1-4", "IGHJ1-5", "IGHJ2-3",
+                      "IGHJ2-5", "IGHJ2-6")
+#do a for loop to add the genes not present
+for (a in addlist_Jgene_imgt){
+  data_imgt_Jgene$True_Jcall <- addLevel(data_imgt_Jgene$True_Jcall, a)
+}
+
+#construct a table for comaparison for imgt J gene 
+imgt_Jgene_CrossTable <- data.frame(table(data_imgt_Jgene$IMGT_Jcall, data_imgt_Jgene$True_Jcall))
+#change column names 
+colnames(imgt_Jgene_CrossTable) <- c("IMGT_Jcall", "True_Jcall", "Counts")
+#log transformation
+imgt_Jgene_CrossTable$Counts <- log(imgt_Jgene_CrossTable$Counts)
+#remove emtpty space 
+imgt_Jgene_CrossTable <- imgt_Jgene_CrossTable[-which(imgt_Jgene_CrossTable$IMGT_Jcall == ""), ]
+imgt_Jgene_CrossTable <- imgt_Jgene_CrossTable[-which(imgt_Jgene_CrossTable$IMGT_Jcall == "less than 6 nucleotides are alig"), ]
+
+heatmap_Jgene_imgt <- ggplot(imgt_Jgene_CrossTable, aes(True_Jcall,IMGT_Jcall)) +
+  geom_tile(aes(fill = Counts), colour = "black") +
+  scale_fill_gradient(low = "blue", high = "red", name = "log(Counts)") + 
+  ggtitle("Frequency of hits and mishits of IMGT J gene annotation") +
+  xlab("True J calls") + ylab("MiXCR J calls")
+
+
+##### combine the three heat maps ################
+heat_list_Jgene <- list(heatmap_Jgene_Igblast, heatmap_Jgene_imgt, heatmap_Jgene_mixcr)
+heat_list[["ncol"]] <- 1
+do.call(grid.arrange, heat_list_Jgene)
+
 
