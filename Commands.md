@@ -37,6 +37,11 @@ IgSimulator command for modified germline J gene
 ` ./ig_simulator.py --chain-type HC --num-bases 100000 --num-mutated 200000 --repertoire-size 500000 --vgenes ./data/bovine_ig_germline_genes/B_V.fasta --dgenes ./data/bovine_ig_germline_genes/IGHD.fasta --jgenes ./data/bovine_ig_germline_genes/IGHJ_Modified.fasta -o Bovine_IgSimulation_Modified_Jgene`
 
 
+IgSimulator command for modified germline J gene and V gene 
+
+`./ig_simulator.py --chain-type HC --num-bases 100000 --num-mutated 200000 --repertoire-size 500000 --vgenes ./data/bovine_ig_germline_genes/B_V_Modified.fasta --dgenes ./data/bovine_ig_germline_genes/IGHD.fasta --jgenes ./data/bovine_ig_germline_genes/IGHJ_Modified.fasta -o Bovine_IgSimulation_Modified_Jgene_Vgene`
+
+
 **NB you can assemble the reads independently using pear**
 
 `pear -f simulated_reads1.fq -r simulated_reads2.fq -o simulated_pear`
