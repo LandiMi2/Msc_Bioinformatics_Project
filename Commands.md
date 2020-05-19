@@ -77,6 +77,14 @@ Add `-OallowPartialAlignments=true  -OallowNoCDR3PartAlignments=true` to the ali
 You good to go....:smile:!!
 
 
+**IgDiscover**
+
+If you want to append breed name at the end of candidate alleles discovered 
+
+` sed 's/>.*/&_Ankole/' new_V_germline.fasta > new_V_germline_Ankole.fasta`
+
+
+
 
 
 
