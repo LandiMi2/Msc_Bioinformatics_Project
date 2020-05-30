@@ -83,6 +83,10 @@ If you want to append breed name at the end of candidate alleles discovered
 
 ` sed 's/>.*/&_Ankole/' new_V_germline.fasta > new_V_germline_Ankole.fasta`
 
+**Additional commands**
+
+`awk '{print ">"$2"\n"$3}' Boran_sequences.tab > Boran_sequences.fasta` to change tab file to fasta file 
+
 
 
 
