@@ -87,6 +87,8 @@ If you want to append breed name at the end of candidate alleles discovered
 
 `awk '{print ">"$2"\n"$3}' Boran_sequences.tab > Boran_sequences.fasta` to change tab file to fasta file 
 
+cleaning sequences using sed
+`sed -e '/^[^>]/s/[^ATGCatgc]//g' Boran_sequences.fasta > Boran_seq.fasta`
 
 
 
