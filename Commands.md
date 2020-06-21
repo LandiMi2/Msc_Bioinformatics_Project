@@ -90,6 +90,10 @@ If you want to append breed name at the end of candidate alleles discovered
 cleaning sequences using sed
 `sed -e '/^[^>]/s/[^ATGCatgc]//g' Boran_sequences.fasta > Boran_seq.fasta`
 
+**Finding unique D genes**
+
+`$zcat filtered.tab.gz | awk '$2 == "IGHV1-17*01_S7671" && $8>= 70{print $3}' | sort | uniq -c`
+
 
 
 
