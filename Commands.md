@@ -95,9 +95,9 @@ cleaning sequences using sed
 `$zcat filtered.tab.gz | awk '$2 == "IGHV1-17*01_S7671" && $8>= 70{print $3}' | sort | uniq -c`
 
 
+**Combining csv using the header of the first csv file**
 
-
-
+`cat ankole.csv <(tail +2 Boran.csv) <(tail +2 friesian.csv) <(tail +2 Ndama.csv) > bigfile.csv `
 
 
 
