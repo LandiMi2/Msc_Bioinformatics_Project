@@ -1,11 +1,8 @@
 ## Bovine B-Cells Repertoire  Analysis
 
-This repo is still on the development stage.
+The R scripts folder contains scripts used for the benchmarking workflow for reviews. 
 
-**To collaborators**
+_Note that there is not much information about the project because this work is yet to be published_
 
-Please create an issue if there are any concerns or ideas you think of. If I have any questions I will always tag a collaborator directly to respond.  
-
-_NB: What is on the issues button, are comments from the previous meeting and what I am to do next_
 
 
