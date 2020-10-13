@@ -104,9 +104,12 @@ cleaning sequences using sed
 If you choose to use IMGT/HighV-QUEST output for TIgGER analysis, creating a pre-processed file as input is as follows;
 
 - First, compress 1_Summary, 2_IMGT-gapped, 3_Nt-sequences and 6_Junction to a zip file
+
 `tar cfJ compressed-calf1.tar.xz 1_Summary.txt 2_IMGT-gapped-nt-sequences.txt 3_Nt-sequences.txt 6_Junction.txt`
 - Then, modify using 
+
 `MakeDb.py imgt -i compressed-calf1.tar.xz -s ../../Calf1_13360_IgG_nucleotides.fasta --extended`
+
 that command will automatically create a XXXXX-pass.tab file 
 
 
